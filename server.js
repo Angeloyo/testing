@@ -50,7 +50,7 @@ app.get('/estado-canal', (req, res) => {
     containerId = fs.readFileSync(path, 'utf8');
   }
 
-  exec('sudo docker ps -q', (error, stdout, stderr) => {
+  exec('docker ps -q --no-trunc', (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
       return res.status(500).send({ estado: 'Error al verificar el estado del canal' });
