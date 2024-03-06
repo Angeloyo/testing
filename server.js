@@ -41,24 +41,27 @@ app.post('/apagar-canal', (req, res) => {
 });
   
 app.get('/estado-canal', (req, res) => {
-    if (!fs.existsSync(path)) {
-      return res.send({ estado: 'Canal apagado' });
-    }
-    
-    // Lee el ID del contenedor desde un archivo si no está en memoria
-    if (!containerId) {
-      containerId = fs.readFileSync(path, 'utf8');
-    }
+  if (!fs.existsSync(path)) {
+    return res.send({ estado: 'Canal apagado' });
+  }
   
-    exec('docker ps -q --no-trunc', (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return res.status(500).send({ estado: 'Error al verificar el estado del canal' });
-      }
-      const estaCorriendo = stdout.includes(containerId);
-      res.send({ estado: estaCorriendo ? 'Canal encendido' : 'Canal apagado' });
-    });
+  // Lee el ID del contenedor desde un archivo si no está en memoria
+  if (!containerId) {
+    containerId = fs.readFileSync(path, 'utf8');
+  }
+
+  exec('sudo docker ps -q', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return res.status(500).send({ estado: 'Error al verificar el estado del canal' });
+    }
+    // Divide stdout por nuevas líneas para obtener un array de IDs
+    const containersRunning = stdout.split('\n').filter(Boolean);
+    const estaCorriendo = containersRunning.includes(containerId);
+    res.send({ estado: estaCorriendo ? `Canal encendido. ID del contenedor: ${containerId}` : 'Canal apagado' });
   });
+});
+
   
 
 app.listen(port, () => {
