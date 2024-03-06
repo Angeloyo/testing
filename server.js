@@ -41,7 +41,7 @@ app.get('/estado-canal', (req, res) => {
     return res.send({ estado: 'No hay ID' });
   }
   
-  exec('sudo docker ps', (error, stdout, stderr) => {
+  exec('docker ps', (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
       return res.status(500).send({ estado: 'Error al verificar el estado del canal' });
