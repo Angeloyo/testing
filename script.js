@@ -66,7 +66,7 @@ function verificarEstadoCanal() {
 }
 
 // Verificar el estado del canal cada 10 segundos
-setInterval(verificarEstadoCanal, 10000);
+setInterval(verificarEstadoCanal, 6000);
 
 // Verificar el estado del canal al cargar la página
 verificarEstadoCanal();

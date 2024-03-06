@@ -38,7 +38,7 @@ app.post('/apagar-canal', (req, res) => {
   
 app.get('/estado-canal', (req, res) => {
   if (!containerId) {
-    return res.send({ estado: 'Canal apagado' });
+    return res.send({ estado: 'No hay ID' });
   }
   
   exec('sudo docker ps', (error, stdout, stderr) => {
