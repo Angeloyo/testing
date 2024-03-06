@@ -1,4 +1,5 @@
 document.getElementById('encender').addEventListener('click', () => {
+    document.getElementById('loader').style.display = 'block';
     fetch('http://82.165.10.57:3000/encender-canal', { // Asegúrate de que la URL es correcta
       method: 'POST',
       headers: {
@@ -21,9 +22,14 @@ document.getElementById('encender').addEventListener('click', () => {
       document.getElementById('estadEncenderCanal').textContent = 'Error al encender el canal';
       document.getElementById('estadEncenderCanal').className = 'rojo'; // Establece el color a rojo
     });
+
+    document.getElementById('loader').style.display = 'none';
   });
+
   
-  document.getElementById('apagar').addEventListener('click', () => {
+document.getElementById('apagar').addEventListener('click', () => {
+    document.getElementById('loader').style.display = 'block';
+
     fetch('http://82.165.10.57:3000/apagar-canal', { // Asegúrate de que la URL es correcta
       method: 'POST',
       headers: {
@@ -46,8 +52,13 @@ document.getElementById('encender').addEventListener('click', () => {
       document.getElementById('estadoApagarCanal').textContent = 'Error al apagar el canal';
       document.getElementById('estadoApagarCanal').className = 'rojo';
     });
+
+    document.getElementById('loader').style.display = 'none';
+
   });
   
+
+
 function verificarEstadoCanal() {
   fetch('http://82.165.10.57:3000/estado-canal', { // Asegúrate de que la URL es correcta
     method: 'GET',
