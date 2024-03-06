@@ -17,14 +17,14 @@ document.getElementById('encender').addEventListener('click', () => {
     .then(data => {
         ocultarLoader();
       console.log(data);
-      document.getElementById('estadEncenderCanal').textContent = 'Canal encendido. ID del contenedor: ' + data.containerId;
-      document.getElementById('estadEncenderCanal').className = 'verde'; // Establece el color a verde
+      document.getElementById('estadoEncenderCanal').textContent = 'Canal encendido. ID del contenedor: ' + data.containerId;
+      document.getElementById('estadoEncenderCanal').className = 'verde'; // Establece el color a verde
     })
     .catch((error) => {
         ocultarLoader();
       console.error('Error:', error);
-      document.getElementById('estadEncenderCanal').textContent = 'Error al encender el canal';
-      document.getElementById('estadEncenderCanal').className = 'rojo'; // Establece el color a rojo
+      document.getElementById('estadoEncenderCanal').textContent = 'Error al encender el canal';
+      document.getElementById('estadoEncenderCanal').className = 'rojo'; // Establece el color a rojo
     });
   });
 
