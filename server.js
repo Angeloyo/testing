@@ -9,18 +9,20 @@ app.use(cors()); // Esto permite solicitudes de cualquier origen. Ajusta según 
 
 app.use(express.json());
 
-let containerId = ''; // Variable para almacenar el ID del contenedor
+const fs = require('fs');
+const path = './containerId.txt';
 
 app.post('/encender-canal', (req, res) => {
-    exec('sudo docker run -d -p 8081:80 ghcr.io/martinbjeldbak/acestream-http-proxy', (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return res.status(500).send({ message: 'Error al encender el canal' });
-      }
-      containerId = stdout.trim(); // Almacena el ID del contenedor
-      res.send({ message: 'Canal encendido con éxito', containerId: stdout.trim() });
-    });
+  exec('sudo docker run -d -p 8081:80 ghcr.io/martinbjeldbak/acestream-http-proxy', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return res.status(500).send({ message: 'Error al encender el canal' });
+    }
+    containerId = stdout.trim();
+    fs.writeFileSync(path, containerId); // Escribe el ID del contenedor a un archivo
+    res.send({ message: 'Canal encendido con éxito', containerId });
   });
+});
 
 app.post('/apagar-canal', (req, res) => {
     if (!containerId) {
@@ -37,19 +39,25 @@ app.post('/apagar-canal', (req, res) => {
 });
   
 app.get('/estado-canal', (req, res) => {
-  if (!containerId) {
-    return res.send({ estado: 'No hay ID' });
-  }
-  
-  exec('docker ps', (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return res.status(500).send({ estado: 'Error al verificar el estado del canal' });
+    if (!fs.existsSync(path)) {
+      return res.send({ estado: 'Canal apagado' });
     }
-    const estaCorriendo = stdout.includes(containerId);
-    res.send({ estado: estaCorriendo ? 'Canal encendido' : 'Canal apagado' });
+    
+    // Lee el ID del contenedor desde un archivo si no está en memoria
+    if (!containerId) {
+      containerId = fs.readFileSync(path, 'utf8');
+    }
+  
+    exec('docker ps -q --no-trunc', (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return res.status(500).send({ estado: 'Error al verificar el estado del canal' });
+      }
+      const estaCorriendo = stdout.includes(containerId);
+      res.send({ estado: estaCorriendo ? 'Canal encendido' : 'Canal apagado' });
+    });
   });
-});
+  
 
 app.listen(port, () => {
   console.log(`Servidor escuchando en puerto ${port}`);
