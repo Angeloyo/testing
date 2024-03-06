@@ -34,8 +34,22 @@ app.post('/apagar-canal', (req, res) => {
       res.send({ message: 'Canal apagado con éxito' });
       containerId = ''; // Limpia el ID del contenedor después de detenerlo
     });
-  });
+});
   
+app.get('/estado-canal', (req, res) => {
+  if (!containerId) {
+    return res.send({ estado: 'Canal apagado' });
+  }
+  
+  exec('sudo docker ps', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return res.status(500).send({ estado: 'Error al verificar el estado del canal' });
+    }
+    const estaCorriendo = stdout.includes(containerId);
+    res.send({ estado: estaCorriendo ? 'Canal encendido' : 'Canal apagado' });
+  });
+});
 
 app.listen(port, () => {
   console.log(`Servidor escuchando en puerto ${port}`);

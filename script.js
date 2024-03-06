@@ -39,7 +39,7 @@ document.getElementById('encender').addEventListener('click', () => {
     .then(data => {
       console.log(data);
       document.getElementById('estadoApagarCanal').textContent = data.message;
-      document.getElementById('estadoApagarCanal').className = 'rojo'; // Cambia el color a rojo para indicar que el canal está apagado
+      document.getElementById('estadoApagarCanal').className = 'verde'; // Cambia el color a rojo para indicar que el canal está apagado
     })
     .catch((error) => {
       console.error('Error:', error);
@@ -48,3 +48,25 @@ document.getElementById('encender').addEventListener('click', () => {
     });
   });
   
+function verificarEstadoCanal() {
+  fetch('http://82.165.10.57:3000/estado-canal', { // Asegúrate de que la URL es correcta
+    method: 'GET',
+  })
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('estadoCanal').textContent = data.estado;
+    const color = data.estado === 'Canal encendido' ? 'verde' : 'rojo';
+    document.getElementById('estadoCanal').className = color;
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+    document.getElementById('estadoCanal').textContent = 'Error al verificar el estado del canal';
+    document.getElementById('estadoCanal').className = 'rojo';
+  });
+}
+
+// Verificar el estado del canal cada 10 segundos
+setInterval(verificarEstadoCanal, 10000);
+
+// Verificar el estado del canal al cargar la página
+verificarEstadoCanal();
