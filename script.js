@@ -75,7 +75,9 @@ function verificarEstadoCanal() {
 }
 
 // Verificar el estado del canal cada 10 segundos
-setInterval(verificarEstadoCanal, 6000);
+document.getElementById('refrescar').addEventListener('click', function() {
+    verificarEstadoCanal();
+});
 
 // Verificar el estado del canal al cargar la página
 verificarEstadoCanal();
