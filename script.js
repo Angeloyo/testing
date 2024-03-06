@@ -76,7 +76,7 @@ function verificarEstadoCanal() {
   .then(data => {
     ocultarLoader();
     document.getElementById('estadoCanal').textContent = data.estado;
-    const color = data.estado === 'Canal encendido' ? 'verde' : 'rojo';
+    const color = data.estado.includes('Canal encendido') ? 'verde' : 'rojo';
     document.getElementById('estadoCanal').className = color;
   })
   .catch((error) => {
