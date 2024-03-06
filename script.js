@@ -1,5 +1,5 @@
 document.getElementById('encender').addEventListener('click', () => {
-    fetch('http://localhost:3000/encender-canal', { // Asegúrate de que la URL es correcta
+    fetch('http://82.165.10.57:3000/encender-canal', { // Asegúrate de que la URL es correcta
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
