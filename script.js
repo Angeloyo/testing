@@ -56,8 +56,6 @@ document.getElementById('apagar').addEventListener('click', () => {
     document.getElementById('loader').style.display = 'none';
 
   });
-  
-
 
 function verificarEstadoCanal() {
   fetch('http://82.165.10.57:3000/estado-canal', { // Asegúrate de que la URL es correcta

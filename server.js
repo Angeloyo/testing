@@ -11,6 +11,8 @@ app.use(express.json());
 
 const fs = require('fs');
 const path = './containerId.txt';
+let containerId = ''; // Variable para almacenar el ID del contenedor
+
 
 app.post('/encender-canal', (req, res) => {
   exec('sudo docker run -d -p 8081:80 ghcr.io/martinbjeldbak/acestream-http-proxy', (error, stdout, stderr) => {
