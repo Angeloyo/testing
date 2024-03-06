@@ -22,3 +22,21 @@ app.post('/encender', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
+
+
+app.get('/estado', (req, res) => {
+    exec('sudo docker ps', (err, stdout, stderr) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ estado: 'desconocido' });
+      }
+      console.log(stdout);
+      console.error(stderr);
+      if (stdout.includes('ghcr.io/martinbjeldbak/acestream-http-proxy')) {
+        res.json({ estado: 'activo' });
+      } else {
+        res.json({ estado: 'inactivo' });
+      }
+    });
+  });
+  
