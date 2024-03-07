@@ -14,17 +14,17 @@ wget https://raw.githubusercontent.com/Angeloyo/boilerplates/main/scripts/instal
 sudo apt install nginx git nodejs npm -y
 
 # new nginx configuration (we save the old one)
-cp /etc/nginx/sites-available/default /etc/nginx/sites-available/old
+sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/old
 
-rm /etc/nginx/sites-available/default
+sudo rm /etc/nginx/sites-available/default
 
-touch /etc/nginx/sites-available/default
+sudo touch /etc/nginx/sites-available/default
 
 echo "What is the IP of your server ?"
 
 read serverip
 
-echo "
+sudo echo "
 
 server {
     listen 80;
