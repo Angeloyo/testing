@@ -1,11 +1,13 @@
 # set up AIO stream server (Ubuntu)
 # ports to be open 8000-8005
 
+#wget https://raw.githubusercontent.com/Angeloyo/testing/main/setupserver.sh -O /tmp/install.sh; bash /tmp/install.sh
+
 # sudo apt update && sudo apt upgrade -y && sudo reboot
 
 # install docker (and docker compose)
 
-# wget https://raw.githubusercontent.com/Angeloyo/boilerplates/main/scripts/installdocker.sh -O /tmp/install.sh; bash /tmp/install.sh
+wget https://raw.githubusercontent.com/Angeloyo/boilerplates/main/scripts/installdocker.sh -O /tmp/install.sh; bash /tmp/install.sh
 
 # install dependencies
 
