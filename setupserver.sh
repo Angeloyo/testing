@@ -35,7 +35,7 @@ server {
     index index.html index.htm index.nginx-debian.html;
 
     location / {
-	try_files $uri $uri/ =404;
+	try_files \$uri \$uri/ =404;
     }
 
 }
@@ -48,10 +48,10 @@ server {
     location / {
         proxy_pass http://127.0.0.1:8050;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $serverip:8000;
-        proxy_cache_bypass $http_upgrade;
+        proxy_cache_bypass \$http_upgrade;
 
         proxy_set_header X-Real-IP 127.0.0.1;
         proxy_set_header X-Forwarded-For 127.0.0.1;
@@ -67,10 +67,10 @@ server {
     location / {
         proxy_pass http://127.0.0.1:8051;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $serverip:8001;
-        proxy_cache_bypass $http_upgrade;
+        proxy_cache_bypass \$http_upgrade;
 
         proxy_set_header X-Real-IP 127.0.0.1;
         proxy_set_header X-Forwarded-For 127.0.0.1;
@@ -86,10 +86,10 @@ server {
     location / {
         proxy_pass http://127.0.0.1:8052;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $serverip:8002;
-        proxy_cache_bypass $http_upgrade;
+        proxy_cache_bypass \$http_upgrade;
 
         proxy_set_header X-Real-IP 127.0.0.1;
         proxy_set_header X-Forwarded-For 127.0.0.1;
@@ -105,10 +105,10 @@ server {
     location / {
         proxy_pass http://127.0.0.1:8053;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $serverip:8003;
-        proxy_cache_bypass $http_upgrade;
+        proxy_cache_bypass \$http_upgrade;
 
         proxy_set_header X-Real-IP 127.0.0.1;
         proxy_set_header X-Forwarded-For 127.0.0.1;
@@ -119,15 +119,15 @@ server {
 server {
     listen 8004;
     listen [::]:8004;
-    server_name 82.165.10.57;
+    server_name $serverip;
 
     location / {
         proxy_pass http://127.0.0.1:8054;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
-        proxy_set_header Host 82.165.10.57:8004;
-        proxy_cache_bypass $http_upgrade;
+        proxy_set_header Host $serverip:8004;
+        proxy_cache_bypass \$http_upgrade;
 
         proxy_set_header X-Real-IP 127.0.0.1;
         proxy_set_header X-Forwarded-For 127.0.0.1;
@@ -143,10 +143,10 @@ server {
     location / {
         proxy_pass http://127.0.0.1:8055;
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $serverip:8005;
-        proxy_cache_bypass $http_upgrade;
+        proxy_cache_bypass \$http_upgrade;
 
         proxy_set_header X-Real-IP 127.0.0.1;
         proxy_set_header X-Forwarded-For 127.0.0.1;
