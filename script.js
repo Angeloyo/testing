@@ -75,7 +75,7 @@ function verificarEstadoCanal() {
   fetch(`https://${url}/estado-canal`, { 
     method: 'GET',
   })
-  .then(response => response.text())
+  .then(response => response.json())
   .then(data => {
     ocultarLoader();
     document.getElementById('estadoCanal').textContent = data.estado;
