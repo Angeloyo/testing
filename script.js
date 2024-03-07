@@ -110,14 +110,14 @@ document.getElementById('apagarT').addEventListener('click', () => {
     .then(data => {
         ocultarLoader();
       console.log(data);
-      document.getElementById('estadoApagarCanal').textContent = data.message;
-      document.getElementById('estadoApagarCanal').className = 'verde'; 
+      document.getElementById('estadoApagarCanalT').textContent = data.message;
+      document.getElementById('estadoApagarCanalT').className = 'verde'; 
     })
     .catch((error) => {
         ocultarLoader();
       console.error('Error:', error);
-      document.getElementById('estadoApagarCanal').textContent = 'Error al apagar el canal';
-      document.getElementById('estadoApagarCanal').className = 'rojo';
+      document.getElementById('estadoApagarCanalT').textContent = 'Error al apagar el canal';
+      document.getElementById('estadoApagarCanalT').className = 'rojo';
     });
   });
 
