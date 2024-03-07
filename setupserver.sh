@@ -167,5 +167,5 @@ sudo git clone https://github.com/Angeloyo/testing /var/www/html/
 
 cd /var/www/html/
 
-npm install
+sudo npm install
 

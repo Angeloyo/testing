@@ -1,7 +1,8 @@
 document.getElementById('encender').addEventListener('click', () => {
   mostrarLoader();
 
-    fetch('http://82.165.10.57:3000/encender-canal', { // Asegúrate de que la URL es correcta
+    // fetch('http://82.165.10.57:3000/encender-canal', { // Asegúrate de que la URL es correcta
+    fetch('https://bap1.casaroja.app/encender-canal', { // Asegúrate de que la URL es correcta
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -31,7 +32,8 @@ document.getElementById('encender').addEventListener('click', () => {
 document.getElementById('apagar').addEventListener('click', () => {
   mostrarLoader();
 
-    fetch('http://82.165.10.57:3000/apagar-canal', { // Asegúrate de que la URL es correcta
+    // fetch('http://82.165.10.57:3000/apagar-canal', { // Asegúrate de que la URL es correcta
+    fetch('https://bap1.casaroja.app/apagar-canal', { // Asegúrate de que la URL es correcta
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -69,7 +71,8 @@ function ocultarLoader() {
 
 function verificarEstadoCanal() {
   mostrarLoader();
-  fetch('http://82.165.10.57:3000/estado-canal', { // Asegúrate de que la URL es correcta
+//   fetch('http://82.165.10.57:3000/estado-canal', { // Asegúrate de que la URL es correcta
+  fetch('https://bap1.casaroja.app/estado-canal', { // Asegúrate de que la URL es correcta
     method: 'GET',
   })
   .then(response => response.json())
