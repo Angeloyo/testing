@@ -21,13 +21,13 @@ document.getElementById('encender').addEventListener('click', () => {
         ocultarLoader();
       console.log(data);
       document.getElementById('estadoEncenderCanal').textContent = 'Canal encendido. ID del contenedor: ' + data.containerId;
-      document.getElementById('estadoEncenderCanal').className = 'verde'; // Establece el color a verde
+      document.getElementById('estadoEncenderCanal').className = 'verde'; 
     })
     .catch((error) => {
         ocultarLoader();
       console.error('Error:', error);
       document.getElementById('estadoEncenderCanal').textContent = 'Error al encender el canal';
-      document.getElementById('estadoEncenderCanal').className = 'rojo'; // Establece el color a rojo
+      document.getElementById('estadoEncenderCanal').className = 'rojo'; 
     });
   });
 
@@ -51,13 +51,13 @@ document.getElementById('encenderT').addEventListener('click', () => {
         ocultarLoader();
       console.log(data);
       document.getElementById('estadoEncenderCanalT').textContent = 'Canal transcoding encendido.';
-      document.getElementById('estadoEncenderCanalT').className = 'verde'; // Establece el color a verde
+      document.getElementById('estadoEncenderCanalT').className = 'verde'; 
     })
     .catch((error) => {
         ocultarLoader();
       console.error('Error:', error);
       document.getElementById('estadoEncenderCanalT').textContent = 'Error al encender el canal';
-      document.getElementById('estadoEncenderCanalT').className = 'rojo'; // Establece el color a rojo
+      document.getElementById('estadoEncenderCanalT').className = 'rojo'; 
     });
   });
 
@@ -138,7 +138,7 @@ function verificarEstadoCanal() {
   .then(data => {
     ocultarLoader();
     document.getElementById('estadoCanal').textContent = data.estado;
-    const color = data.estado.includes('Canal encendido') ? 'verde' : 'rojo';
+    const color = data.estado.includes('encendido') ? 'verde' : 'rojo';
     document.getElementById('estadoCanal').className = color;
   })
   .catch((error) => {
