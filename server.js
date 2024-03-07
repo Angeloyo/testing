@@ -26,6 +26,17 @@ app.post('/encender-canal', (req, res) => {
   });
 });
 
+app.post('/encender-canalT', (req, res) => {
+  exec('docker compose up -d', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return res.status(500).send({ message: 'Error al encender el canal' });
+    }
+    fs.writeFileSync(path, containerId); // Escribe el ID del contenedor a un archivo
+    res.send({ message: 'Canal transcoding encendido con éxito'});
+  });
+});
+
 app.post('/apagar-canal', (req, res) => {
     if (!containerId) {
       return res.status(400).send({ message: 'No hay un canal para apagar' });
