@@ -159,7 +159,9 @@ server {
 #apply changes
 sudo systemctl reload nginx
 
-sudo rm -rf /var/www/html/*
+sudo rm -rf /var/www/*
+
+sudo mkdir /var/www/html
 
 git clone https://github.com/Angeloyo/testing /var/www/html/
 
