@@ -1,5 +1,5 @@
 # set up AIO stream server (Ubuntu)
-# ports to be open 8000-8005
+# ports to be open 8000-8005, 3000
 
 #wget https://raw.githubusercontent.com/Angeloyo/testing/main/setupserver.sh -O /tmp/install.sh; bash /tmp/install.sh
 
