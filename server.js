@@ -96,8 +96,8 @@ app.get('/estado-canalT', (req, res) => {
         console.error(`exec error: ${error}`);
         return res.status(500).send({ estado: 'Error al verificar el estado del canal' });
       }
-      const containersRunning = stdout.split('\n').filter(Boolean);
-      const estaCorriendo = containersRunning.includes('c1');
+    //   const containersRunning = stdout.split('\n').filter(Boolean);
+      const estaCorriendo = stdout.includes('c1');
       res.send({ estado: estaCorriendo ? `estado canal transcoding : encendido.` : 'estado canal transcoding : apagado' });
     });
   });
