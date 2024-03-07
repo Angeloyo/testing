@@ -12,7 +12,7 @@ services:
     volumes:
       - ./data:/data # Asume que quieres guardar archivos en un directorio `data` en tu host
     command: > 
-      ffmpeg -i http://acestream:8090/ace/manifest.m3u8?id=f096a64dd756a6d549aa7b12ee9acf7eee27e833 -acodec aac -ab 96k -vcodec libx264 -vb 800k -maxrate 1000k -bufsize 1200k -f hls -hls_time 8 -hls_list_size 30 -hls_flags delete_segments -hls_wrap 30 -hls_segment_filename 'stream%03d.ts' /data/output.m3u8"
+      ffmpeg -i http://acestream:8090/ace/manifest.m3u8?id=f096a64dd756a6d549aa7b12ee9acf7eee27e833 -acodec aac -ab 96k -vcodec libx264 -vb 800k -maxrate 1000k -bufsize 1200k -f hls -hls_time 8 -hls_list_size 30 -hls_flags delete_segments -hls_wrap 30 -hls_segment_filename 'stream%03d.ts' /data/output.m3u8
     depends_on:
       - acestream
     networks:
