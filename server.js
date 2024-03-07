@@ -80,10 +80,27 @@ app.get('/estado-canal', (req, res) => {
     // Divide stdout por nuevas líneas para obtener un array de IDs
     const containersRunning = stdout.split('\n').filter(Boolean);
     const estaCorriendo = containersRunning.includes(containerId);
-    res.send({ estado: estaCorriendo ? `Canal encendido. ID del contenedor: ${containerId}` : 'Canal apagado' });
+    res.send({ estado: estaCorriendo ? `Estado canal : encendido. ID del contenedor: ${containerId}` : 'Estado canal : apagado' });
   });
 });
 
+app.get('/estado-canalT', (req, res) => {
+
+    // Lee el ID del contenedor desde un archivo si no está en memoria
+    if (!containerId) {
+      containerId = fs.readFileSync(path, 'utf8');
+    }
+  
+    exec('docker compose -p c1 ps', (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return res.status(500).send({ estado: 'Error al verificar el estado del canal' });
+      }
+      const containersRunning = stdout.split('\n').filter(Boolean);
+      const estaCorriendo = containersRunning.includes('c1');
+      res.send({ estado: estaCorriendo ? `estado canal transcoding : encendido.` : 'estado canal transcoding : apagado' });
+    });
+  });
   
 
 app.listen(port, () => {

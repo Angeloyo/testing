@@ -149,7 +149,27 @@ function verificarEstadoCanal() {
   });
 }
 
-// Verificar el estado del canal cada 10 segundos
+function verificarEstadoCanalT() {
+  mostrarLoader();
+  fetch(`https://${url}/estado-canalT`, { 
+    method: 'GET',
+  })
+  .then(response => response.json())
+  .then(data => {
+    ocultarLoader();
+    document.getElementById('estadoCanalT').textContent = data.estado;
+    const color = data.estado.includes('Canal encendido') ? 'verde' : 'rojo';
+    document.getElementById('estadoCanalT').className = color;
+  })
+  .catch((error) => {
+    ocultarLoader();
+    console.error('Error:', error);
+    document.getElementById('estadoCanalT').textContent = 'Error al verificar el estado del canal';
+    document.getElementById('estadoCanalT').className = 'rojo';
+  });
+}
+
+// Verificar el estado del canal manualmente
 document.getElementById('refrescar').addEventListener('click', function() {
     verificarEstadoCanal();
 });
