@@ -1,5 +1,5 @@
-const url = '82.165.10.57:3000'
-// const url = 'bap1.casaroja.app';
+// const url = '82.165.10.57:3000'
+const url = 'ap1.casaroja.app';
 
 document.getElementById('encender').addEventListener('click', () => {
   mostrarLoader();
