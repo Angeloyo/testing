@@ -176,3 +176,4 @@ document.getElementById('refrescar').addEventListener('click', function() {
 
 // Verificar el estado del canal al cargar la página
 verificarEstadoCanal();
+verificarEstadoCanalT();
