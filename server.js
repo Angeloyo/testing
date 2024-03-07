@@ -53,7 +53,7 @@ app.post('/apagar-canal', (req, res) => {
 
 app.post('/apagar-canalT', (req, res) => {
 
-    exec(`docker compose down`, (error, stdout, stderr) => {
+    exec(`docker compose -p c1 kill && docker compose -p c1 rm`, (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
         return res.status(500).send({ message: 'Error al apagar el canal' });
