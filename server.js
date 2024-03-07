@@ -54,7 +54,7 @@ app.post('/apagar-canal', (req, res) => {
 app.post('/apagar-canalT', (req, res) => {
     // Ejecuta los comandos de docker-compose y luego elimina los archivos en ./data
     // Se utiliza exec para permitir la ejecución de múltiples comandos separados por &&
-    exec(`docker compose -p c1 kill && docker compose -p c1 rm `, (error, stdout, stderr) => {
+    exec(`docker compose -p c1 kill && docker compose -p c1 rm -f && rm ./data/*`, (error, stdout, stderr) => {
         // Verifica si hubo un error durante la ejecución
         if (error) {
             console.error(`exec error: ${error}`);
