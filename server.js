@@ -50,6 +50,17 @@ app.post('/apagar-canal', (req, res) => {
       containerId = ''; // Limpia el ID del contenedor después de detenerlo
     });
 });
+
+app.post('/apagar-canalT', (req, res) => {
+
+    exec(`docker compose down`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return res.status(500).send({ message: 'Error al apagar el canal' });
+      }
+      res.send({ message: 'Canal transcoding apagado con éxito' });
+    });
+});
   
 app.get('/estado-canal', (req, res) => {
   if (!fs.existsSync(path)) {
