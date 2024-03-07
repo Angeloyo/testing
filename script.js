@@ -4,7 +4,7 @@ const url = 'ap1.casaroja.app';
 document.getElementById('encender').addEventListener('click', () => {
   mostrarLoader();
 
-    fetch(`https://${url}/encender-canal`, { // Asegúrate de que la URL es correcta
+    fetch(`https://${url}/encender-canal`, { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ document.getElementById('encender').addEventListener('click', () => {
 document.getElementById('apagar').addEventListener('click', () => {
   mostrarLoader();
 
-    fetch(`https://${url}/apagar-canal`, { // Asegúrate de que la URL es correcta
+    fetch(`https://${url}/apagar-canal`, { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -72,10 +72,10 @@ function ocultarLoader() {
 
 function verificarEstadoCanal() {
   mostrarLoader();
-  fetch(`https://${url}/estado-canal`, { // Asegúrate de que la URL es correcta
+  fetch(`https://${url}/estado-canal`, { 
     method: 'GET',
   })
-  .then(response => response.json())
+  .then(response => response.text())
   .then(data => {
     ocultarLoader();
     document.getElementById('estadoCanal').textContent = data.estado;
