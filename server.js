@@ -52,13 +52,27 @@ app.post('/apagar-canal', (req, res) => {
 });
 
 app.post('/apagar-canalT', (req, res) => {
-
-    exec(`docker compose -p c1 kill && docker compose -p c1 rm && rm ./data/*`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return res.status(500).send({ message: 'Error al apagar el canal' });
-      }
-      res.send({ message: 'Canal transcoding apagado con éxito' });
+    // Ejecuta los comandos de docker-compose y luego elimina los archivos en ./data
+    // Se utiliza exec para permitir la ejecución de múltiples comandos separados por &&
+    exec(`docker compose -p c1 kill && docker compose -p c1 rm && rm -rf ./data/*`, (error, stdout, stderr) => {
+        // Verifica si hubo un error durante la ejecución
+        if (error) {
+            console.error(`exec error: ${error}`);
+            console.error(`stderr: ${stderr}`); // Muestra la salida de error estándar para diagnóstico
+            // Envía una respuesta detallada en caso de error, incluyendo el mensaje de error y la salida stderr
+            return res.status(500).send({
+                message: 'Error al apagar el canal',
+                error: error.toString(),
+                stderr: stderr
+            });
+        }
+        // Si no hay error, registra la salida estándar para auditoría o diagnóstico
+        console.log(`stdout: ${stdout}`);
+        // Envía una respuesta de éxito, considera incluir parte de stdout si es relevante para el cliente
+        res.send({
+            message: 'Canal transcoding apagado con éxito',
+            stdout: stdout // Opcional, dependiendo de si quieres exponer esta información
+        });
     });
 });
   
