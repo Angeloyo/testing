@@ -159,13 +159,11 @@ server {
 #apply changes
 sudo systemctl reload nginx
 
-cd /var/www/
+sudo rm -rf /var/www/html/*
 
-rm -rf html/*
+git clone https://github.com/Angeloyo/testing /var/www/html/
 
-git clone https://github.com/Angeloyo/testing html/
-
-cd html/
+cd /var/www/html/
 
 npm install
 
