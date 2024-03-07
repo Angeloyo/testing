@@ -15,7 +15,7 @@ let containerId = ''; // Variable para almacenar el ID del contenedor
 
 
 app.post('/encender-canal', (req, res) => {
-  exec('sudo docker run -d -p 8050:80 ghcr.io/martinbjeldbak/acestream-http-proxy', (error, stdout, stderr) => {
+  exec('docker run -d -p 8050:80 ghcr.io/martinbjeldbak/acestream-http-proxy', (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
       return res.status(500).send({ message: 'Error al encender el canal' });
@@ -30,7 +30,7 @@ app.post('/apagar-canal', (req, res) => {
     if (!containerId) {
       return res.status(400).send({ message: 'No hay un canal para apagar' });
     }
-    exec(`sudo docker stop ${containerId}`, (error, stdout, stderr) => {
+    exec(`docker stop ${containerId}`, (error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
         return res.status(500).send({ message: 'Error al apagar el canal' });
