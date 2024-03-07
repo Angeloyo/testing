@@ -1,16 +1,16 @@
 version: '3'
 services:
   acestream:
-    image: ghcr.io/martinbjeldbak/acestream-http-proxy # Usa la imagen de Acestream correcta
+    image: ghcr.io/martinbjeldbak/acestream-http-proxy 
     ports:
-      - "80" # Expone el puerto que Acestream utiliza
+      - "80" 
     networks:
       - stream-network
 
   ffmpeg:
-    image: jrottenberg/ffmpeg # Esta es una imagen de FFmpeg genérica, ajusta según sea necesario
+    image: jrottenberg/ffmpeg 
     volumes:
-      - ./data:/data # Asume que quieres guardar archivos en un directorio `data` en tu host
+      - ./data:/data 
     environment:
       - STREAM_ID
     command: >
