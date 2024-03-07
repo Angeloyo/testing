@@ -50,7 +50,7 @@ document.getElementById('encenderT').addEventListener('click', () => {
     .then(data => {
         ocultarLoader();
       console.log(data);
-      document.getElementById('estadoEncenderCanalT').textContent = 'Canal transcoding encendido. ID del contenedor: ' + data.containerId;
+      document.getElementById('estadoEncenderCanalT').textContent = 'Canal transcoding encendido.';
       document.getElementById('estadoEncenderCanalT').className = 'verde'; // Establece el color a verde
     })
     .catch((error) => {
