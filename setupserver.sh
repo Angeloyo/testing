@@ -163,7 +163,7 @@ sudo rm -rf /var/www/*
 
 sudo mkdir /var/www/html
 
-git clone https://github.com/Angeloyo/testing /var/www/html/
+sudo git clone https://github.com/Angeloyo/testing /var/www/html/
 
 cd /var/www/html/
 
