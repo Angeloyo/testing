@@ -27,7 +27,7 @@ app.post('/encender-canal', (req, res) => {
 });
 
 app.post('/encender-canalT', (req, res) => {
-  exec('docker compose up -d', (error, stdout, stderr) => {
+  exec('STREAM_ID=f096a64dd756a6d549aa7b12ee9acf7eee27e833 docker compose -p c1 up -d', (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
       return res.status(500).send({ message: 'Error al encender el canal' });
