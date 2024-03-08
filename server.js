@@ -20,19 +20,17 @@ function getNextAvailableId(callback) {
             return;
         }
 
-        let nextAvailableId = 0; // Comienza buscando desde el ID 0
-        for (let row of rows) {
-            if (row.live_channel_id == nextAvailableId) {
-                nextAvailableId++; // Si el ID actual está en uso, intenta con el siguiente
-            } else {
-                break; // Encuentra un hueco
-            }
+        let nextAvailableId = 0;
+        // Asegurémonos de que live_channel_id se maneje como un número
+        const liveChannelIds = rows.map(row => Number(row.live_channel_id));
+
+        while (liveChannelIds.includes(nextAvailableId)) {
+            nextAvailableId++;
         }
 
         callback(null, nextAvailableId);
     });
 }
-
 
 // Encender canal raw (sin transcoding)
 app.post('/api/canales/encender/raw/:id', (req, res) => {
