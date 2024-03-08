@@ -102,16 +102,6 @@ app.get('/estado-canal', (req, res) => {
 });
 
 app.get('/estado-canalT', (req, res) => {
-    // Intenta leer el ID del contenedor desde un archivo, si no está en memoria
-    if (!containerId) {
-        try {
-            containerId = fs.readFileSync(path, 'utf8');
-        } catch (readError) {
-            console.error(`Error leyendo el archivo: ${readError}`);
-            return res.status(500).send({ estado: 'Error al leer el ID del contenedor' });
-        }
-    }
-
     exec('docker compose -p c1 ps', (execError, stdout, stderr) => {
         if (execError) {
             console.error(`exec error: ${execError}`);
