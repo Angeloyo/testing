@@ -165,7 +165,7 @@ app.post('/api/canales/encender/transcode/:id', (req, res) => {
 });
 
 // Apagar canal con transcoding
-app.delete('/api/canales/apagar/raw/:id', (req, res) => {
+app.delete('/api/canales/apagar/transcode/:id', (req, res) => {
     const { id } = req.params; 
 
     const getDockerIdQuery = `SELECT docker_id FROM canales WHERE id = ?`;
