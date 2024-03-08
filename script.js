@@ -126,62 +126,6 @@ function ocultarLoader() {
     document.getElementById('loader').style.display = 'none';
 }
 
-function verificarEstadoCanal() {
-  mostrarLoader();
-  fetch(`https://${url}/estado-canal`, { 
-    method: 'GET',
-  })
-  .then(response => response.json())
-  .then(data => {
-    ocultarLoader();
-    document.getElementById('estadoCanal').textContent = data.estado;
-    const color = data.estado.includes('encendido') ? 'verde' : 'rojo';
-    document.getElementById('estadoCanal').className = color;
-  })
-  .catch((error) => {
-    ocultarLoader();
-    console.error('Error:', error);
-    document.getElementById('estadoCanal').textContent = 'Error al verificar el estado del canal';
-    document.getElementById('estadoCanal').className = 'rojo';
-  });
-}
-
-function verificarEstadoCanalT() {
-  mostrarLoader();
-  fetch(`https://${url}/estado-canalT`, { 
-    method: 'GET',
-  })
-  .then(response => {
-    if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-    } else {
-        return response.json();
-    }
-   })
-  .then(data => {
-    ocultarLoader();
-    document.getElementById('estadoCanalT').textContent = data.estado;
-    const color = data.estado.includes('encendido') ? 'verde' : 'rojo';
-    document.getElementById('estadoCanalT').className = color;
-  })
-  .catch((error) => {
-    ocultarLoader();
-    console.error('Error!:', error);
-    document.getElementById('estadoCanalT').textContent = 'Error al verificar el estado del canal';
-    document.getElementById('estadoCanalT').className = 'rojo';
-  });
-}
-
-// Verificar el estado del canal manualmente
-document.getElementById('refrescar').addEventListener('click', function() {
-    verificarEstadoCanal();
-    verificarEstadoCanalT();
-});
-
-// Verificar el estado del canal al cargar la página
-verificarEstadoCanal();
-verificarEstadoCanalT();
-
 window.onload = function() {
     obtenerCanalesYMostrar();
 };
@@ -229,6 +173,7 @@ function obtenerCanalesYMostrar() {
         });
 }
 
+// Crear canal form
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("crear-canal-form");
 
