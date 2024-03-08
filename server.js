@@ -2,7 +2,7 @@ const express = require('express');
 const { exec } = require('child_process');
 
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./canales.db');
+const db = new sqlite3.Database('./database.db');
 
 const app = express();
 const port = 3000;
