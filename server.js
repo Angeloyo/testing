@@ -179,8 +179,8 @@ app.delete('/api/canales/apagar/transcode/:id', (req, res) => {
         if (!row || !row.docker_id) {
             return res.status(404).send({ message: 'Canal no encontrado o no está encendido' });
         }
-        console.log(" cierra " +row.liveChannelId);
-        exec(`docker compose -p transcoding-${row.liveChannelId} kill && docker compose -p transcoding-${row.liveChannelId} rm -f && rm -rf ./watch/${row.liveChannelId}`, (error, stdout, stderr) => {
+
+        exec(`docker compose -p transcoding-${row.live_channel_id} kill && docker compose -p transcoding-${row.live_channel_id} rm -f && rm -rf ./watch/${row.live_channel_id}`, (error, stdout, stderr) => {
             if (error) {
                 console.error(`exec error: ${error}`);
                 return res.status(500).send({ message: 'Error al apagar el canal' });
