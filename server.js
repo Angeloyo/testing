@@ -13,7 +13,6 @@ app.use(cors()); // Esto permite solicitudes de cualquier origen. Ajusta según 
 app.use(express.json());
 
 function getNextAvailableId(callback) {
-    // Selecciona todos los live_channel_id ordenados
     db.all("SELECT live_channel_id FROM canales ORDER BY live_channel_id ASC", [], (err, rows) => {
         if (err) {
             console.error(`Error de base de datos: ${err.message}`);
@@ -21,24 +20,19 @@ function getNextAvailableId(callback) {
             return;
         }
 
-        if (rows.length === 0) {
-            // Si no hay canales, el próximo ID disponible es 0
-            callback(null, 0);
-            return;
-        }
-
-        // Encuentra el primer hueco en la secuencia de live_channel_id
-        let expectedId = 0;
-        for (let i = 0; i < rows.length; i++) {
-            if (rows[i].live_channel_id != expectedId) {
-                break;
+        let nextAvailableId = 0; // Comienza buscando desde el ID 0
+        for (let row of rows) {
+            if (row.live_channel_id == nextAvailableId) {
+                nextAvailableId++; // Si el ID actual está en uso, intenta con el siguiente
+            } else {
+                break; // Encuentra un hueco
             }
-            expectedId++;
         }
 
-        callback(null, expectedId);
+        callback(null, nextAvailableId);
     });
 }
+
 
 // Encender canal raw (sin transcoding)
 app.post('/api/canales/encender/raw/:id', (req, res) => {
@@ -68,7 +62,6 @@ app.post('/api/canales/encender/raw/:id', (req, res) => {
             exec(`docker run -d -p ${port}:80 ghcr.io/martinbjeldbak/acestream-http-proxy`, (error, stdout) => {
                 if (error) {
                     console.error(`exec error: ${error}`);
-                    console.log(liveChannelId);
                     return res.status(500).send({ message: 'Error al encender el canal'});
                 }
                 const containerId = stdout.trim();
