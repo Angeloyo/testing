@@ -137,7 +137,7 @@ function verCanalTranscode(id) {
             return response.json();
         })
         .then(data => {
-            const liveChannelId = data.live_channel_id; // Asume que el servidor devuelve un objeto con esta propiedad.
+            const liveChannelId = data.live_channel_id;
             const urlFinal = `https://${url}/watch/${liveChannelId}/output.m3u8`;
             window.open(urlFinal, '_blank');
         })
