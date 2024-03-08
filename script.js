@@ -69,7 +69,8 @@ function verCanalRaw(id) {
             const port = 8050 + liveChannelId; // Calcula el puerto.
             
             // Construye la URL final.
-            const urlFinal = `https://${url}/watch/ace/manifest.m3u8?id=${id}&live_channel_port=${port}`;
+            // const urlFinal = `https://${url}/watch/ace/manifest.m3u8?id=${id}&live_channel_port=${port}`;
+            const urlFinal = `https://${url}/watch/${port}/ace/manifest.m3u8?id=${id}`;
             // Redirige al usuario a la URL en una nueva pestaña.
             window.open(urlFinal, '_blank');
         })
