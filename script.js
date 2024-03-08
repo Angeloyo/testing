@@ -11,7 +11,7 @@ function encenderCanalRaw(id) {
     .then(response => {
         if (!response.ok) {
             // Si el servidor responde con un error, lanza un Error para manejarlo en el catch.
-            throw new Error('Error al encender el canal');
+            throw new Error('Error al apagar el canal');
         }
         return response.json(); // Convierte la respuesta del servidor a JSON.
     })
@@ -27,98 +27,31 @@ function encenderCanalRaw(id) {
     });
 }
 
+function apagarCanalRaw(id) {
 
-document.getElementById('encenderT').addEventListener('click', () => {
-  mostrarLoader();
-
-    fetch(`https://${url}/encender-canalT`, { 
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    fetch(`/api/canales/apagar/raw/${id}`, { // Asegúrate de que la URL coincida con tu endpoint en el servidor.
+        method: 'POST',
     })
     .then(response => {
-        ocultarLoader();
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
-      }
-      return response.json();
+        if (!response.ok) {
+            // Si el servidor responde con un error, lanza un Error para manejarlo en el catch.
+            throw new Error('Error al apagar el canal');
+        }
+        return response.json(); // Convierte la respuesta del servidor a JSON.
     })
     .then(data => {
-        ocultarLoader();
-      console.log(data);
-      document.getElementById('estadoEncenderCanalT').textContent = 'Canal transcoding encendido.';
-      document.getElementById('estadoEncenderCanalT').className = 'verde'; 
+        // Manejo de la respuesta exitosa.
+        console.log(data);
+        alert(`Canal ${id} encendido con éxito`);
+        obtenerCanalesYMostrar();
     })
-    .catch((error) => {
-        ocultarLoader();
-      console.error('Error:', error);
-      document.getElementById('estadoEncenderCanalT').textContent = 'Error al encender el canal';
-      document.getElementById('estadoEncenderCanalT').className = 'rojo'; 
+    .catch(error => {
+        console.error('Error al encender el canal:', error);
+        alert('No se pudo apagar el canal. Verifica la consola para más detalles.');
     });
-  });
+}
 
-document.getElementById('apagar').addEventListener('click', () => {
-  mostrarLoader();
-
-    fetch(`https://${url}/apagar-canal`, { 
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then(response => {
-        ocultarLoader();
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-        ocultarLoader();
-      console.log(data);
-      document.getElementById('estadoApagarCanal').textContent = data.message;
-      document.getElementById('estadoApagarCanal').className = 'verde'; // Cambia el color a rojo para indicar que el canal está apagado
-    })
-    .catch((error) => {
-        ocultarLoader();
-      console.error('Error:', error);
-      document.getElementById('estadoApagarCanal').textContent = 'Error al apagar el canal';
-      document.getElementById('estadoApagarCanal').className = 'rojo';
-    });
-  });
-
-document.getElementById('apagarT').addEventListener('click', () => {
-  mostrarLoader();
-
-    fetch(`https://${url}/apagar-canalT`, { 
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then(response => {
-        ocultarLoader();
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-        ocultarLoader();
-      console.log(data);
-      document.getElementById('estadoApagarCanalT').textContent = data.message;
-      document.getElementById('estadoApagarCanalT').className = 'verde'; 
-    })
-    .catch((error) => {
-        ocultarLoader();
-      console.error('Error:', error);
-      document.getElementById('estadoApagarCanalT').textContent = 'Error al apagar el canal';
-      document.getElementById('estadoApagarCanalT').className = 'rojo';
-    });
-  });
-
-  function mostrarLoader() {
+function mostrarLoader() {
     document.getElementById('loader').style.display = 'block';
 }
 

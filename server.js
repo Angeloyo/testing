@@ -96,8 +96,6 @@ app.post('/api/canales/apagar/raw/:id', (req, res) => {
     });
 });
 
-
-
 function getNextAvailableId(callback) {
     // Selecciona todos los live_channel_id ordenados
     db.all("SELECT live_channel_id FROM canales ORDER BY live_channel_id ASC", [], (err, rows) => {
@@ -126,46 +124,6 @@ function getNextAvailableId(callback) {
     });
 }
 
-
-app.post('/apagar-canal', (req, res) => {
-    if (!containerId) {
-      return res.status(400).send({ message: 'No hay un canal para apagar' });
-    }
-    exec(`docker stop ${containerId}`, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return res.status(500).send({ message: 'Error al apagar el canal' });
-      }
-      res.send({ message: 'Canal apagado con éxito' });
-      containerId = ''; // Limpia el ID del contenedor después de detenerlo
-    });
-});
-
-app.post('/apagar-canalT', (req, res) => {
-    // Ejecuta los comandos de docker-compose y luego elimina los archivos en ./data
-    // Se utiliza exec para permitir la ejecución de múltiples comandos separados por &&
-    exec(`docker compose -p c1 kill && docker compose -p c1 rm -f && rm -rf ./data`, (error, stdout, stderr) => {
-        // Verifica si hubo un error durante la ejecución
-        if (error) {
-            console.error(`exec error: ${error}`);
-            console.error(`stderr: ${stderr}`); // Muestra la salida de error estándar para diagnóstico
-            // Envía una respuesta detallada en caso de error, incluyendo el mensaje de error y la salida stderr
-            return res.status(500).send({
-                message: 'Error al apagar el canal',
-                error: error.toString(),
-                stderr: stderr
-            });
-        }
-        // Si no hay error, registra la salida estándar para auditoría o diagnóstico
-        console.log(`stdout: ${stdout}`);
-        // Envía una respuesta de éxito, considera incluir parte de stdout si es relevante para el cliente
-        res.send({
-            message: 'Canal transcoding apagado con éxito',
-            stdout: stdout // Opcional, dependiendo de si quieres exponer esta información
-        });
-    });
-});
-  
 app.listen(port, () => {
   console.log(`Servidor escuchando en puerto ${port}`);
 });
