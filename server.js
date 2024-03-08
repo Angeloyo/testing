@@ -102,23 +102,30 @@ app.get('/estado-canal', (req, res) => {
 });
 
 app.get('/estado-canalT', (req, res) => {
-
-    // Lee el ID del contenedor desde un archivo si no está en memoria
+    // Intenta leer el ID del contenedor desde un archivo, si no está en memoria
     if (!containerId) {
-      containerId = fs.readFileSync(path, 'utf8');
+        try {
+            containerId = fs.readFileSync(path, 'utf8');
+        } catch (readError) {
+            console.error(`Error leyendo el archivo: ${readError}`);
+            return res.status(500).send({ estado: 'Error al leer el ID del contenedor' });
+        }
     }
-  
-    exec('docker compose -p c1 ps', (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return res.status(500).send({ estado: 'Error al verificar el estado del canal' });
-      }
-    //   const containersRunning = stdout.split('\n').filter(Boolean);
-      const estaCorriendo = stdout.includes('c1');
-      res.send({ estado: estaCorriendo ? `estado canal transcoding : encendido.` : 'estado canal transcoding : apagado' });
+
+    exec('docker compose -p c1 ps', (execError, stdout, stderr) => {
+        if (execError) {
+            console.error(`exec error: ${execError}`);
+            return res.status(500).send({
+                estado: 'Error al verificar el estado del canal',
+                error: stderr || execError.message
+            });
+        }
+
+        // Analiza stdout para determinar si el contenedor está corriendo
+        const estaCorriendo = stdout.includes('c1');
+        res.send({ estado: estaCorriendo ? `estado canal transcoding : encendido.` : 'estado canal transcoding : apagado' });
     });
-  });
-  
+});
 
 app.listen(port, () => {
   console.log(`Servidor escuchando en puerto ${port}`);

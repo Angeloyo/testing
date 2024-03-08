@@ -154,7 +154,13 @@ function verificarEstadoCanalT() {
   fetch(`https://${url}/estado-canalT`, { 
     method: 'GET',
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    } else {
+        return response.json();
+    }
+   })
   .then(data => {
     ocultarLoader();
     document.getElementById('estadoCanalT').textContent = data.estado;
@@ -163,7 +169,7 @@ function verificarEstadoCanalT() {
   })
   .catch((error) => {
     ocultarLoader();
-    console.error('Error!:', error.estado);
+    console.error('Error!:', error);
     document.getElementById('estadoCanalT').textContent = 'Error al verificar el estado del canal';
     document.getElementById('estadoCanalT').className = 'rojo';
   });
