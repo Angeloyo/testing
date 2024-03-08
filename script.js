@@ -4,7 +4,7 @@ const url = 'ap1.casaroja.app';
 document.getElementById('encender').addEventListener('click', () => {
   mostrarLoader();
 
-    fetch(`https://${url}/encender-canal`, { 
+    fetch(`https://${url}/api/canales/encender/raw`, { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -30,6 +30,32 @@ document.getElementById('encender').addEventListener('click', () => {
       document.getElementById('estadoEncenderCanal').className = 'rojo'; 
     });
   });
+
+  function encenderCanal(id) {
+
+    fetch(`/api/canales/encender/raw/${id}`, { // Asegúrate de que la URL coincida con tu endpoint en el servidor.
+        method: 'POST',
+    })
+    .then(response => {
+        if (!response.ok) {
+            // Si el servidor responde con un error, lanza un Error para manejarlo en el catch.
+            throw new Error('Error al encender el canal');
+        }
+        return response.json(); // Convierte la respuesta del servidor a JSON.
+    })
+    .then(data => {
+        // Manejo de la respuesta exitosa.
+        console.log(data);
+        alert(`Canal ${idCanal} encendido con éxito`);
+        // Aquí puedes agregar cualquier lógica adicional que quieras ejecutar tras encender el canal.
+        // Por ejemplo, actualizar la interfaz de usuario para reflejar que el canal ahora está encendido.
+    })
+    .catch(error => {
+        console.error('Error al encender el canal:', error);
+        alert('No se pudo encender el canal. Verifica la consola para más detalles.');
+    });
+}
+
 
 document.getElementById('encenderT').addEventListener('click', () => {
   mostrarLoader();
@@ -237,7 +263,8 @@ function obtenerCanalesYMostrar() {
             canales.forEach(canal => {
                 const elemento = document.createElement('div');
                 elemento.innerHTML = `Nombre: ${canal.nombre}, ID: ${canal.id}, Docker ID: ${canal.docker_id || 'No Encendido'}
-                                      <button onclick="eliminarCanal('${canal.id}')">Eliminar</button>`;
+                                      <button onclick="eliminarCanal('${canal.id}')">Eliminar</button>
+                                      <button onclick="encenderCanal('${canal.id}')">Encender Raw</button>`;
                 listaCanales.appendChild(elemento);
             });
         })

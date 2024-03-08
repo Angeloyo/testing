@@ -29,6 +29,81 @@ app.post('/encender-canal', (req, res) => {
   });
 });
 
+app.post('/api/canales/encender/raw/:id', (req, res) => {
+    const { id } = req.params; // Obtiene el ID del canal desde el parámetro URL
+
+    // Primero, verifica si el canal existe
+    const checkQuery = `SELECT id FROM canales WHERE id = ?`;
+    db.get(checkQuery, [id], (checkErr, row) => {
+        if (checkErr) {
+            console.error(`Error al verificar el canal: ${checkErr}`);
+            return res.status(500).send({ message: 'Error al verificar el canal' });
+        }
+
+        if (!row) {
+            // Si no se encuentra el canal, envía una respuesta indicando que no existe
+            return res.status(404).send({ message: 'Canal no encontrado' });
+        }
+
+        // Si el canal existe, procede con la lógica para encenderlo
+        getNextAvailableId((err, liveChannelId) => {
+            if (err) {
+                return res.status(500).send({ message: 'Error al obtener el próximo liveChannelId disponible' });
+            }
+
+            const port = 8050 + liveChannelId;
+
+            exec(`docker run -d -p ${port}:80 ghcr.io/martinbjeldbak/acestream-http-proxy`, (error, stdout) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    return res.status(500).send({ message: 'Error al encender el canal' });
+                }
+                const containerId = stdout.trim();
+
+                const updateQuery = `UPDATE canales SET docker_id = ?, live_channel_id = ? WHERE id = ?`;
+                db.run(updateQuery, [containerId, liveChannelId, id], function(updateErr) {
+                    if (updateErr) {
+                        console.error(updateErr.message);
+                        return res.status(500).send({ message: 'Error al actualizar la información del canal' });
+                    }
+                    res.send({ message: 'Canal encendido con éxito', id, liveChannelId, port, containerId });
+                });
+            });
+        });
+    });
+});
+
+
+function getNextAvailableId(callback) {
+    // Selecciona todos los live_channel_id ordenados
+    db.all("SELECT live_channel_id FROM canales ORDER BY live_channel_id ASC", [], (err, rows) => {
+        if (err) {
+            console.error(`Error de base de datos: ${err.message}`);
+            callback(err, null);
+            return;
+        }
+
+        if (rows.length === 0) {
+            // Si no hay canales, el próximo ID disponible es 0
+            callback(null, 0);
+            return;
+        }
+
+        // Encuentra el primer hueco en la secuencia de live_channel_id
+        let expectedId = 0;
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].live_channel_id != expectedId) {
+                break;
+            }
+            expectedId++;
+        }
+
+        callback(null, expectedId);
+    });
+}
+
+
+
 app.post('/encender-canalT', (req, res) => {
   exec('STREAM_ID=f096a64dd756a6d549aa7b12ee9acf7eee27e833 docker compose -p c1 up -d', (error, stdout, stderr) => {
     if (error) {
@@ -126,22 +201,10 @@ db.serialize(() => {
     CREATE TABLE IF NOT EXISTS canales (
       id TEXT PRIMARY KEY,
       nombre TEXT NOT NULL,
-      docker_id TEXT
+      docker_id TEXT,
+      live_channel_id INTEGER
     )`
   );
-
-  db.run(`
-    CREATE TABLE IF NOT EXISTS info (
-      clave TEXT PRIMARY KEY,
-      valor INTEGER
-    )`
-  );
-
-  // Inicializar el conteo de canales encendidos si no existe
-  db.run(`
-    INSERT INTO info (clave, valor) VALUES ('canalesEncendidos', 0)
-    ON CONFLICT(clave) DO NOTHING
-  `);
 });
 
 
@@ -157,6 +220,7 @@ function cerrarDB() {
 
 // No olvides llamar a cerrarDB() cuando sea apropiado, como al cerrar tu aplicación.
 
+// Crear canal
 app.post('/api/canales', (req, res) => {
   const { id, nombre } = req.body;
   if (!id || !nombre) {
@@ -185,6 +249,7 @@ app.get('/api/canales', (req, res) => {
   });
 });
 
+// Eliminar canal
 app.delete('/api/canales/:id', (req, res) => {
     const { id } = req.params; // Obtiene el ID del canal desde el parámetro URL
 
