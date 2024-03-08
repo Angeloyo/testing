@@ -92,7 +92,7 @@ function encenderCanalTranscode(id) {
     })
     .then(data => {
         ocultarLoader()
-        // console.log(data);
+        console.log(data);
         alert(`Canal ${id} encendido con éxito`);
         obtenerCanalesYMostrar();
     })

@@ -143,7 +143,6 @@ app.post('/api/canales/encender/transcode/:id', (req, res) => {
 
             const port = 8050 + liveChannelId;
 
-            // exec(`docker run -d -p ${port}:80 ghcr.io/martinbjeldbak/acestream-http-proxy`, (error, stdout) => {
             exec(`STREAM_ID=${id} LIVE_CHANNEL_ID=${liveChannelId} docker compose -p transcoding-${liveChannelId} up -d`, (error, stdout) => {
                 if (error) {
                     console.error(`exec error: ${error}`);
@@ -180,7 +179,7 @@ app.delete('/api/canales/apagar/transcode/:id', (req, res) => {
             return res.status(404).send({ message: 'Canal no encontrado o no está encendido' });
         }
 
-        console.log("cerrando " + row.live_channel_id);
+        console.log("testing " + row.docker_id + " " + row.live_channel_id);
 
         exec(`docker compose -p transcoding-${row.live_channel_id} kill && docker compose -p transcoding-${row.live_channel_id} rm -f && rm -rf ./watch/${row.live_channel_id}`, (error, stdout, stderr) => {
             if (error) {
