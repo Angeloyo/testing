@@ -66,11 +66,10 @@ function verCanalRaw(id) {
         })
         .then(data => {
             const liveChannelId = data.live_channel_id; // Asume que el servidor devuelve un objeto con esta propiedad.
-            const port = 8050 + liveChannelId; // Calcula el puerto.
             
             // Construye la URL final.
             // const urlFinal = `https://${url}/watch/ace/manifest.m3u8?id=${id}&live_channel_port=${port}`;
-            const urlFinal = `https://${url}/watch/${port}/ace/manifest.m3u8?id=${id}`;
+            const urlFinal = `https://${url}/watch/${liveChannelId}/ace/manifest.m3u8?id=${id}`;
             // Redirige al usuario a la URL en una nueva pestaña.
             window.open(urlFinal, '_blank');
         })
