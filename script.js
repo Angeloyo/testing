@@ -185,31 +185,6 @@ document.getElementById('refrescar').addEventListener('click', function() {
 verificarEstadoCanal();
 verificarEstadoCanalT();
 
-
-function crearCanal() {
-  // Recoger los valores del formulario
-  const nombreCanal = document.getElementById('nombre-canal').value;
-  const idCanal = document.getElementById('id-canal').value;
-
-  // Generar el HTML para el nuevo canal
-  const nuevoCanalHTML = `
-    <div class="canal" id="canal-${idCanal}">
-      <h3>${nombreCanal}</h3>
-      <p>${idCanal}</p>
-      <button onclick="encenderCanal('${idCanal}')">Encender Canal</button>
-      <button onclick="apagarCanal('${idCanal}')">Apagar Canal</button>
-      <button onclick="refrescarCanal('${idCanal}')">Refrescar</button>
-      <button onclick="eliminarCanal('${idCanal}')">Eliminar</button>
-    </div>
-  `;
-
-  // Agregar el nuevo canal al DOM
-  document.body.innerHTML += nuevoCanalHTML;
-
-  // Opcional: Llamar a una API para guardar el canal en el servidor
-  // guardarCanal(nombreCanal, idCanal);
-}
-
 function cancelarCreacion() {
   document.getElementById('nombre-canal').value = '';
   document.getElementById('id-canal').value = '';
@@ -230,6 +205,24 @@ window.onload = function() {
     obtenerCanalesYMostrar();
 };
 
+function eliminarCanal(id) {
+    fetch(`/api/canales/${id}`, {
+        method: 'DELETE',
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data.mensaje);
+        alert("Canal eliminado exitosamente");
+        obtenerCanalesYMostrar(); // Recargar la lista de canales
+    })
+    .catch(error => console.error("Error al eliminar el canal:", error));
+}
+
 function obtenerCanalesYMostrar() {
     fetch('/api/canales')
         .then(function (response) {
@@ -243,7 +236,8 @@ function obtenerCanalesYMostrar() {
             listaCanales.innerHTML = ''; // Limpiar la lista antes de mostrar los resultados
             canales.forEach(canal => {
                 const elemento = document.createElement('div');
-                elemento.innerHTML = `Nombre: ${canal.nombre}, ID: ${canal.id}, Docker ID: ${canal.docker_id || 'No Encendido'}`;
+                elemento.innerHTML = `Nombre: ${canal.nombre}, ID: ${canal.id}, Docker ID: ${canal.docker_id || 'No Encendido'}
+                                      <button onclick="eliminarCanal('${canal.id}')">Eliminar</button>`;
                 listaCanales.appendChild(elemento);
             });
         })

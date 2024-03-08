@@ -184,3 +184,25 @@ app.get('/api/canales', (req, res) => {
     res.status(200).json(filas);
   });
 });
+
+app.delete('/api/canales/:id', (req, res) => {
+    const { id } = req.params; // Obtiene el ID del canal desde el parámetro URL
+
+    // Prepara y ejecuta la consulta SQL para eliminar el canal
+    const query = `DELETE FROM canales WHERE id = ?`;
+    db.run(query, id, function(err) {
+        if (err) {
+            // Si ocurre un error durante la eliminación, envía una respuesta de error
+            console.error(err.message);
+            res.status(500).send({ error: "Error al eliminar el canal." });
+            return;
+        }
+        if (this.changes > 0) {
+            // Si la eliminación fue exitosa y afectó al menos una fila, envía una respuesta de éxito
+            res.status(200).send({ mensaje: "Canal eliminado exitosamente" });
+        } else {
+            // Si no se encontró el canal (ninguna fila afectada), informa que el canal no fue encontrado
+            res.status(404).send({ mensaje: "Canal no encontrado" });
+        }
+    });
+});
