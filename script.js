@@ -264,6 +264,8 @@ document.addEventListener("DOMContentLoaded", function() {
         // Objeto con los datos del canal a crear
         const datosCanal = { id, nombre };
 
+        console.log(datosCanal); // Añade esto para depurar
+
         // Envío de los datos al servidor usando fetch
         fetch("/api/canales", {
             method: "POST",

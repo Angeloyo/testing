@@ -11,7 +11,7 @@ wget https://raw.githubusercontent.com/Angeloyo/boilerplates/main/scripts/instal
 
 # install dependencies
 
-sudo apt install nginx git nodejs npm -y
+sudo apt install nginx git nodejs npm sqlite3 -y
 
 # new nginx configuration (we save the old one)
 sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/old
