@@ -164,7 +164,7 @@ function obtenerCanalesYMostrar() {
                 elemento.innerHTML = `Nombre: ${canal.nombre}, ID: ${canal.id}, Docker ID: ${canal.docker_id || 'No Encendido'}
                                       <button onclick="eliminarCanal('${canal.id}')">Eliminar</button>
                                       <button onclick="encenderCanalRaw('${canal.id}')">Encender Raw</button>
-                                      <button onclick="apagarCanalRaw('${canal.id}')">Encender Raw</button>`;
+                                      <button onclick="apagarCanalRaw('${canal.id}')">Apagar Raw</button>`;
                 listaCanales.appendChild(elemento);
             });
         })
