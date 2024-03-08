@@ -163,7 +163,7 @@ function verificarEstadoCanalT() {
   })
   .catch((error) => {
     ocultarLoader();
-    console.error('Error:', error.estado);
+    console.error('Error!:', error.estado);
     document.getElementById('estadoCanalT').textContent = 'Error al verificar el estado del canal';
     document.getElementById('estadoCanalT').className = 'rojo';
   });
