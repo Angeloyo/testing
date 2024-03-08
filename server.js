@@ -68,7 +68,8 @@ app.post('/api/canales/encender/raw/:id', (req, res) => {
             exec(`docker run -d -p ${port}:80 ghcr.io/martinbjeldbak/acestream-http-proxy`, (error, stdout) => {
                 if (error) {
                     console.error(`exec error: ${error}`);
-                    return res.status(500).send({ message: 'Error al encender el canal' + liveChannelId});
+                    console.log(liveChannelId);
+                    return res.status(500).send({ message: 'Error al encender el canal'});
                 }
                 const containerId = stdout.trim();
 
