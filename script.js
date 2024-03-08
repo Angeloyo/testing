@@ -46,7 +46,7 @@ document.getElementById('encender').addEventListener('click', () => {
     .then(data => {
         // Manejo de la respuesta exitosa.
         console.log(data);
-        alert(`Canal ${idCanal} encendido con éxito`);
+        alert(`Canal ${id} encendido con éxito`);
         // Aquí puedes agregar cualquier lógica adicional que quieras ejecutar tras encender el canal.
         // Por ejemplo, actualizar la interfaz de usuario para reflejar que el canal ahora está encendido.
     })
@@ -210,22 +210,6 @@ document.getElementById('refrescar').addEventListener('click', function() {
 // Verificar el estado del canal al cargar la página
 verificarEstadoCanal();
 verificarEstadoCanalT();
-
-function cancelarCreacion() {
-  document.getElementById('nombre-canal').value = '';
-  document.getElementById('id-canal').value = '';
-}
-
-function eliminarCanal(idCanal) {
-  // Eliminar el canal del DOM
-  const elementoCanal = document.getElementById(`canal-${idCanal}`);
-  if (elementoCanal) {
-    elementoCanal.parentNode.removeChild(elementoCanal);
-  }
-
-  // Opcional: Enviar solicitud al backend para eliminar el canal de la base de datos
-  // eliminarCanalBackend(idCanal);
-}
 
 window.onload = function() {
     obtenerCanalesYMostrar();
