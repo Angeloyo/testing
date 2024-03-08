@@ -30,7 +30,7 @@ function encenderCanalRaw(id) {
 function apagarCanalRaw(id) {
 
     fetch(`/api/canales/apagar/raw/${id}`, { // Asegúrate de que la URL coincida con tu endpoint en el servidor.
-        method: 'POST',
+        method: 'DELETE',
     })
     .then(response => {
         if (!response.ok) {
@@ -42,11 +42,11 @@ function apagarCanalRaw(id) {
     .then(data => {
         // Manejo de la respuesta exitosa.
         console.log(data);
-        alert(`Canal ${id} encendido con éxito`);
+        alert(`Canal ${id} apagado con éxito`);
         obtenerCanalesYMostrar();
     })
     .catch(error => {
-        console.error('Error al encender el canal:', error);
+        console.error('Error al apagar el canal:', error);
         alert('No se pudo apagar el canal. Verifica la consola para más detalles.');
     });
 }

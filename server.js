@@ -57,7 +57,7 @@ app.post('/api/canales/encender/raw/:id', (req, res) => {
     });
 });
 
-app.post('/api/canales/apagar/raw/:id', (req, res) => {
+app.delete('/api/canales/apagar/raw/:id', (req, res) => {
     const { id } = req.params; // Obtiene el ID del canal desde el parámetro URL
 
     // Primero, obtiene el docker_id del canal a apagar.
