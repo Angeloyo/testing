@@ -55,6 +55,32 @@ function apagarCanalRaw(id) {
     });
 }
 
+function verCanalRaw(id) {
+    // Realiza una solicitud al servidor para obtener el live_channel_id del canal.
+    fetch(`/api/canales/getLiveID/${id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('No se pudo obtener la información del canal.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const liveChannelId = data.live_channel_id; // Asume que el servidor devuelve un objeto con esta propiedad.
+            const port = 8050 + liveChannelId; // Calcula el puerto.
+            
+            // Construye la URL final.
+            const urlFinal = `https://${url}/watch?live_channel_port=${port}/ace/manifest.m3u8?id=${id}`;
+            
+            // Redirige al usuario a la URL en una nueva pestaña.
+            window.open(urlFinal, '_blank');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al ver el canal. Por favor, intente de nuevo más tarde.');
+        });
+}
+
+
 function mostrarLoader() {
     document.getElementById('loader').style.display = 'block';
 }
@@ -101,6 +127,7 @@ function obtenerCanalesYMostrar() {
                 elemento.innerHTML = `Nombre: ${canal.nombre}, ID: ${canal.id}, Docker ID: ${canal.docker_id || 'No Encendido'}
                                       <button onclick="eliminarCanal('${canal.id}')">Eliminar</button>
                                       <button onclick="encenderCanalRaw('${canal.id}')">Encender Raw</button>
+                                      <button onclick="verCanalRaw('${canal.id}')">Ver Raw</button>
                                       <button onclick="apagarCanalRaw('${canal.id}')">Apagar Raw</button>`;
                 listaCanales.appendChild(elemento);
             });

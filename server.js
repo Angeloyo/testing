@@ -21,7 +21,8 @@ function getNextAvailableId(callback) {
         }
 
         let nextAvailableId = 0;
-        // Asegurémonos de que live_channel_id se maneje como un número
+
+        // live_channel_id se maneje como un número
         const liveChannelIds = rows.map(row => Number(row.live_channel_id));
 
         while (liveChannelIds.includes(nextAvailableId)) {
@@ -78,6 +79,7 @@ app.post('/api/canales/encender/raw/:id', (req, res) => {
     });
 });
 
+// Apagar canal raw (sin transcoding)
 app.delete('/api/canales/apagar/raw/:id', (req, res) => {
     const { id } = req.params; // Obtiene el ID del canal desde el parámetro URL
 
@@ -117,6 +119,29 @@ app.delete('/api/canales/apagar/raw/:id', (req, res) => {
     });
 });
 
+app.get('/api/canales/getLiveID/:id', (req, res) => {
+    const { id } = req.params; // Extrae el ID del canal de los parámetros de la URL
+
+    // Consulta para obtener el live_channel_id del canal específico
+    const query = 'SELECT live_channel_id FROM canales WHERE id = ?';
+
+    db.get(query, [id], (err, row) => {
+        if (err) {
+            // Maneja cualquier error que ocurra durante la consulta
+            console.error('Error al realizar la consulta en la base de datos', err);
+            res.status(500).send({ error: 'Error al consultar la base de datos' });
+            return;
+        }
+        if (row) {
+            // Si se encuentra el canal, devuelve el live_channel_id
+            res.status(200).send({ live_channel_id: row.live_channel_id });
+        } else {
+            // Si no se encuentra el canal, devuelve un error 404
+            res.status(404).send({ error: 'Canal no encontrado' });
+        }
+    });
+});
+
 app.listen(port, () => {
   console.log(`Servidor escuchando en puerto ${port}`);
 });
@@ -131,7 +156,6 @@ db.serialize(() => {
     )`
   );
 });
-
 
 // Función para cerrar la base de datos cuando ya no sea necesaria
 function cerrarDB() {
