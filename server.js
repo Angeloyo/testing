@@ -167,7 +167,7 @@ app.post('/api/canales/encender/transcode/:id', (req, res) => {
 app.delete('/api/canales/apagar/transcode/:id', (req, res) => {
     const { id } = req.params; 
 
-    const getDockerIdQuery = `SELECT docker_id FROM canales WHERE id = ?`;
+    const getDockerIdQuery = `SELECT docker_id, live_channel_id FROM canales WHERE id = ?`;
     db.get(getDockerIdQuery, [id], (getErr, row) => {
 
         if (getErr) {
@@ -178,8 +178,6 @@ app.delete('/api/canales/apagar/transcode/:id', (req, res) => {
         if (!row || !row.docker_id) {
             return res.status(404).send({ message: 'Canal no encontrado o no está encendido' });
         }
-
-        console.log("testing " + row.docker_id + " " + row.live_channel_id);
 
         exec(`docker compose -p transcoding-${row.live_channel_id} kill && docker compose -p transcoding-${row.live_channel_id} rm -f && rm -rf ./watch/${row.live_channel_id}`, (error, stdout, stderr) => {
             if (error) {
