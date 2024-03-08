@@ -17,7 +17,7 @@ function encenderCanalRaw(id) {
     .then(data => {
         ocultarLoader()
         // Manejo de la respuesta exitosa.
-        console.log(data);
+        // console.log(data);
         alert(`Canal ${id} encendido con éxito`);
         obtenerCanalesYMostrar();
     })
@@ -43,8 +43,7 @@ function apagarCanalRaw(id) {
     })
     .then(data => {
         ocultarLoader()
-        // Manejo de la respuesta exitosa.
-        console.log(data);
+        // console.log(data);
         alert(`Canal ${id} apagado con éxito`);
         obtenerCanalesYMostrar();
     })
@@ -93,7 +92,7 @@ function encenderCanalTranscode(id) {
     })
     .then(data => {
         ocultarLoader()
-        console.log(data);
+        // console.log(data);
         alert(`Canal ${id} encendido con éxito`);
         obtenerCanalesYMostrar();
     })
@@ -118,7 +117,7 @@ function apagarCanalTranscode(id) {
     })
     .then(data => {
         ocultarLoader()
-        console.log(data);
+        // console.log(data);
         alert(`Canal ${id} apagado con éxito`);
         obtenerCanalesYMostrar();
     })
@@ -172,7 +171,7 @@ function eliminarCanal(id) {
         return response.json();
     })
     .then(data => {
-        console.log(data.mensaje);
+        // console.log(data.mensaje);
         alert("Canal eliminado exitosamente");
         obtenerCanalesYMostrar(); // Recargar la lista de canales
     })
@@ -222,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Objeto con los datos del canal a crear
         const datosCanal = { id, nombre };
 
-        console.log(datosCanal); // Añade esto para depurar
+        // console.log(datosCanal);
 
         // Envío de los datos al servidor usando fetch
         fetch("/api/canales", {
@@ -239,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function() {
             return response.json();
         })
         .then(data => {
-            console.log(data);
+            // console.log(data);
             alert("Canal creado exitosamente");
             document.getElementById("nombre-canal").value = '';
             document.getElementById("id-canal").value = '';
