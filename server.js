@@ -63,7 +63,7 @@ app.post('/api/canales/apagar/raw/:id', (req, res) => {
     // Primero, obtiene el docker_id del canal a apagar.
     const getDockerIdQuery = `SELECT docker_id FROM canales WHERE id = ?`;
     db.get(getDockerIdQuery, [id], (getErr, row) => {
-        
+
         if (getErr) {
             console.error(`Error al obtener el docker_id del canal: ${getErr}`);
             return res.status(500).send({ message: 'Error al obtener el docker_id del canal' });
@@ -166,44 +166,6 @@ app.post('/apagar-canalT', (req, res) => {
     });
 });
   
-app.get('/estado-canal', (req, res) => {
-  if (!fs.existsSync(path)) {
-    return res.send({ estado: 'Canal apagado' });
-  }
-  
-  // Lee el ID del contenedor desde un archivo si no está en memoria
-  if (!containerId) {
-    containerId = fs.readFileSync(path, 'utf8');
-  }
-
-  exec('docker ps -q --no-trunc', (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return res.status(500).send({ estado: 'Error al verificar el estado del canal' });
-    }
-    // Divide stdout por nuevas líneas para obtener un array de IDs
-    const containersRunning = stdout.split('\n').filter(Boolean);
-    const estaCorriendo = containersRunning.includes(containerId);
-    res.send({ estado: estaCorriendo ? `Estado canal : encendido. ID del contenedor: ${containerId}` : 'Estado canal : apagado' });
-  });
-});
-
-app.get('/estado-canalT', (req, res) => {
-    exec('docker compose -p c1 ps', (execError, stdout, stderr) => {
-        if (execError) {
-            console.error(`exec error: ${execError}`);
-            return res.status(500).send({
-                estado: 'Error al verificar el estado del canal',
-                error: stderr || execError.message
-            });
-        }
-
-        // Analiza stdout para determinar si el contenedor está corriendo
-        const estaCorriendo = stdout.includes('c1');
-        res.send({ estado: estaCorriendo ? `estado canal transcoding : encendido.` : 'estado canal transcoding : apagado' });
-    });
-});
-
 app.listen(port, () => {
   console.log(`Servidor escuchando en puerto ${port}`);
 });
