@@ -79,6 +79,75 @@ function verCanalRaw(id) {
         });
 }
 
+function encenderCanalTranscode(id) {
+    mostrarLoader()
+    fetch(`/api/canales/encender/transcode/${id}`, {
+        method: 'POST',
+    })
+    .then(response => {
+        ocultarLoader()
+        if (!response.ok) {
+            throw new Error('Error al encender el canal');
+        }
+        return response.json();
+    })
+    .then(data => {
+        ocultarLoader()
+        console.log(data);
+        alert(`Canal ${id} encendido con éxito`);
+        obtenerCanalesYMostrar();
+    })
+    .catch(error => {
+        ocultarLoader()
+        console.error('Error al encender el canal:', error);
+        alert('No se pudo encender el canal. Verifica la consola para más detalles.');
+    });
+}
+
+function apagarCanalTranscode(id) {
+    mostrarLoader()
+    fetch(`/api/canales/apagar/transcode/${id}`, { 
+        method: 'DELETE',
+    })
+    .then(response => {
+        ocultarLoader()
+        if (!response.ok) {
+            throw new Error('Error al apagar el canal');
+        }
+        return response.json(); 
+    })
+    .then(data => {
+        ocultarLoader()
+        console.log(data);
+        alert(`Canal ${id} apagado con éxito`);
+        obtenerCanalesYMostrar();
+    })
+    .catch(error => {
+        ocultarLoader()
+        console.error('Error al apagar el canal:', error);
+        alert('No se pudo apagar el canal. Verifica la consola para más detalles.');
+    });
+}
+
+function verCanalTranscode(id) {
+    fetch(`/api/canales/getLiveID/${id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('No se pudo obtener la información del canal.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const liveChannelId = data.live_channel_id; // Asume que el servidor devuelve un objeto con esta propiedad.
+            const urlFinal = `https://${url}/watch/${liveChannelId}/output.m3u8`;
+            window.open(urlFinal, '_blank');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al ver el canal. Por favor, intente de nuevo más tarde.');
+        });
+}
+
 
 function mostrarLoader() {
     document.getElementById('loader').style.display = 'block';
@@ -128,6 +197,9 @@ function obtenerCanalesYMostrar() {
                                       <button onclick="encenderCanalRaw('${canal.id}')">Encender Raw</button>
                                       <button onclick="apagarCanalRaw('${canal.id}')">Apagar Raw</button>
                                       <button onclick="verCanalRaw('${canal.id}')">Ver Raw</button>
+                                      <button onclick="encenderCanalTranscode('${canal.id}')">Encender Transcode</button>
+                                      <button onclick="apagarCanalTranscode('${canal.id}')">Apagar Transcode</button>
+                                      <button onclick="verCanalTranscode('${canal.id}')">Ver Transcode</button>
                                       `;
                 listaCanales.appendChild(elemento);
             });

@@ -9,10 +9,11 @@ services:
 
   ffmpeg:
     image: jrottenberg/ffmpeg 
-    volumes:
-      - ./data:/data 
     environment:
       - STREAM_ID
+      - LIVE_CHANNEL_ID
+    volumes:
+      - ./watch/${LIVE_CHANNEL_ID}:/data 
     command: >
       -i http://acestream:80/ace/manifest.m3u8?id=${STREAM_ID} -acodec aac -ab 128k -vcodec libx264 -crf 30 -preset veryfast -f hls -hls_time 10 -hls_list_size 24 -hls_flags delete_segments -hls_segment_filename '/data/stream%03d.ts' /data/output.m3u8
     depends_on:

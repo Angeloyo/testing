@@ -119,6 +119,85 @@ app.delete('/api/canales/apagar/raw/:id', (req, res) => {
     });
 });
 
+// Encender canal con transcoding
+app.post('/api/canales/encender/transcode/:id', (req, res) => {
+    const { id } = req.params; 
+
+    const checkQuery = `SELECT id FROM canales WHERE id = ?`;
+    db.get(checkQuery, [id], (checkErr, row) => {
+        if (checkErr) {
+            console.error(`Error al verificar el canal: ${checkErr}`);
+            return res.status(500).send({ message: 'Error al verificar el canal' });
+        }
+
+        if (!row) {
+            // Si no se encuentra el canal, envía una respuesta indicando que no existe
+            return res.status(404).send({ message: 'Canal no encontrado' });
+        }
+
+        // Si el canal existe, procede con la lógica para encenderlo
+        getNextAvailableId((err, liveChannelId) => {
+            if (err) {
+                return res.status(500).send({ message: 'Error al obtener el próximo liveChannelId disponible' });
+            }
+
+            const port = 8050 + liveChannelId;
+
+            // exec(`docker run -d -p ${port}:80 ghcr.io/martinbjeldbak/acestream-http-proxy`, (error, stdout) => {
+            exec(`STREAM_ID=${id} LIVE_CHANNEL_ID=${liveChannelId} docker compose -p transcoding-${liveChannelId} up -d`, (error, stdout) => {
+                if (error) {
+                    console.error(`exec error: ${error}`);
+                    return res.status(500).send({ message: 'Error al encender el canal'});
+                }
+                const containerId = `transcoding-${liveChannelId}`;
+
+                const updateQuery = `UPDATE canales SET docker_id = ?, live_channel_id = ? WHERE id = ?`;
+                db.run(updateQuery, [containerId, liveChannelId, id], function(updateErr) {
+                    if (updateErr) {
+                        console.error(updateErr.message);
+                        return res.status(500).send({ message: 'Error al actualizar la información del canal' });
+                    }
+                    res.send({ message: 'Canal encendido con éxito', id, liveChannelId, port, containerId });
+                });
+            });
+        });
+    });
+});
+
+// Apagar canal con transcoding
+app.delete('/api/canales/apagar/raw/:id', (req, res) => {
+    const { id } = req.params; 
+
+    const getDockerIdQuery = `SELECT docker_id FROM canales WHERE id = ?`;
+    db.get(getDockerIdQuery, [id], (getErr, row) => {
+
+        if (getErr) {
+            console.error(`Error al obtener el docker_id del canal: ${getErr}`);
+            return res.status(500).send({ message: 'Error al obtener el docker_id del canal' });
+        }
+
+        if (!row || !row.docker_id) {
+            return res.status(404).send({ message: 'Canal no encontrado o no está encendido' });
+        }
+
+        exec(`docker compose -p transcoding-${row.liveChannelId} kill && docker compose -p transcoding-${row.liveChannelId} rm -f && rm -rf ./watch/${row.liveChannelId}`, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`exec error: ${error}`);
+                return res.status(500).send({ message: 'Error al apagar el canal' });
+            }
+
+            const updateQuery = `UPDATE canales SET docker_id = NULL, live_channel_id = NULL WHERE id = ?`;
+            db.run(updateQuery, [id], function(updateErr) {
+                if (updateErr) {
+                    console.error(updateErr.message);
+                    return res.status(500).send({ message: 'Error al actualizar la información del canal en la base de datos' });
+                }
+                res.send({ message: 'Canal apagado con éxito', id });
+            });
+        });
+    });
+});
+
 app.get('/api/canales/getLiveID/:id', (req, res) => {
     const { id } = req.params; // Extrae el ID del canal de los parámetros de la URL
 
@@ -140,10 +219,6 @@ app.get('/api/canales/getLiveID/:id', (req, res) => {
             res.status(404).send({ error: 'Canal no encontrado' });
         }
     });
-});
-
-app.listen(port, () => {
-  console.log(`Servidor escuchando en puerto ${port}`);
 });
 
 db.serialize(() => {
@@ -220,3 +295,11 @@ app.delete('/api/canales/:id', (req, res) => {
         }
     });
 });
+
+
+
+
+app.listen(port, () => {
+    console.log(`Servidor escuchando en puerto ${port}`);
+  });
+  
