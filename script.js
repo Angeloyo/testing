@@ -178,3 +178,107 @@ document.getElementById('refrescar').addEventListener('click', function() {
 // Verificar el estado del canal al cargar la página
 verificarEstadoCanal();
 verificarEstadoCanalT();
+
+
+function crearCanal() {
+  // Recoger los valores del formulario
+  const nombreCanal = document.getElementById('nombre-canal').value;
+  const idCanal = document.getElementById('id-canal').value;
+
+  // Generar el HTML para el nuevo canal
+  const nuevoCanalHTML = `
+    <div class="canal" id="canal-${idCanal}">
+      <h3>${nombreCanal}</h3>
+      <p>${idCanal}</p>
+      <button onclick="encenderCanal('${idCanal}')">Encender Canal</button>
+      <button onclick="apagarCanal('${idCanal}')">Apagar Canal</button>
+      <button onclick="refrescarCanal('${idCanal}')">Refrescar</button>
+      <button onclick="eliminarCanal('${idCanal}')">Eliminar</button>
+    </div>
+  `;
+
+  // Agregar el nuevo canal al DOM
+  document.body.innerHTML += nuevoCanalHTML;
+
+  // Opcional: Llamar a una API para guardar el canal en el servidor
+  // guardarCanal(nombreCanal, idCanal);
+}
+
+function cancelarCreacion() {
+  document.getElementById('nombre-canal').value = '';
+  document.getElementById('id-canal').value = '';
+}
+
+function eliminarCanal(idCanal) {
+  // Eliminar el canal del DOM
+  const elementoCanal = document.getElementById(`canal-${idCanal}`);
+  if (elementoCanal) {
+    elementoCanal.parentNode.removeChild(elementoCanal);
+  }
+
+  // Opcional: Enviar solicitud al backend para eliminar el canal de la base de datos
+  // eliminarCanalBackend(idCanal);
+}
+
+window.onload = function() {
+    obtenerCanalesYMostrar();
+};
+
+function obtenerCanalesYMostrar() {
+    fetch('/api/canales')
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json(); // Parsea la respuesta JSON
+        })
+        .then(function (canales) {
+            const listaCanales = document.getElementById('lista-canales');
+            listaCanales.innerHTML = ''; // Limpiar la lista antes de mostrar los resultados
+            canales.forEach(canal => {
+                const elemento = document.createElement('div');
+                elemento.innerHTML = `Nombre: ${canal.nombre}, ID: ${canal.id}, Docker ID: ${canal.docker_id || 'No Encendido'}`;
+                listaCanales.appendChild(elemento);
+            });
+        })
+        .catch(function (error) {
+            console.error('Error al obtener los canales:', error);
+        });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("crear-canal-form");
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault(); // Evitar el envío del formulario por defecto
+
+        const nombre = document.getElementById("nombre-canal").value;
+        const id = document.getElementById("id-canal").value;
+
+        // Objeto con los datos del canal a crear
+        const datosCanal = { id, nombre };
+
+        // Envío de los datos al servidor usando fetch
+        fetch("/api/canales", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(datosCanal),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+            alert("Canal creado exitosamente");
+            // Opcional: actualiza la UI o limpia el formulario aquí
+        })
+        .catch((error) => {
+            console.error("Error al crear el canal:", error);
+        });
+    });
+});
