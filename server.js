@@ -12,6 +12,34 @@ app.use(cors()); // Esto permite solicitudes de cualquier origen. Ajusta según 
 
 app.use(express.json());
 
+function getNextAvailableId(callback) {
+    // Selecciona todos los live_channel_id ordenados
+    db.all("SELECT live_channel_id FROM canales ORDER BY live_channel_id ASC", [], (err, rows) => {
+        if (err) {
+            console.error(`Error de base de datos: ${err.message}`);
+            callback(err, null);
+            return;
+        }
+
+        if (rows.length === 0) {
+            // Si no hay canales, el próximo ID disponible es 0
+            callback(null, 0);
+            return;
+        }
+
+        // Encuentra el primer hueco en la secuencia de live_channel_id
+        let expectedId = 0;
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].live_channel_id != expectedId) {
+                break;
+            }
+            expectedId++;
+        }
+
+        callback(null, expectedId);
+    });
+}
+
 // Encender canal raw (sin transcoding)
 app.post('/api/canales/encender/raw/:id', (req, res) => {
     const { id } = req.params; // Obtiene el ID del canal desde el parámetro URL
@@ -95,34 +123,6 @@ app.delete('/api/canales/apagar/raw/:id', (req, res) => {
         });
     });
 });
-
-function getNextAvailableId(callback) {
-    // Selecciona todos los live_channel_id ordenados
-    db.all("SELECT live_channel_id FROM canales ORDER BY live_channel_id ASC", [], (err, rows) => {
-        if (err) {
-            console.error(`Error de base de datos: ${err.message}`);
-            callback(err, null);
-            return;
-        }
-
-        if (rows.length === 0) {
-            // Si no hay canales, el próximo ID disponible es 0
-            callback(null, 0);
-            return;
-        }
-
-        // Encuentra el primer hueco en la secuencia de live_channel_id
-        let expectedId = 0;
-        for (let i = 0; i < rows.length; i++) {
-            if (rows[i].live_channel_id != expectedId) {
-                break;
-            }
-            expectedId++;
-        }
-
-        callback(null, expectedId);
-    });
-}
 
 app.listen(port, () => {
   console.log(`Servidor escuchando en puerto ${port}`);

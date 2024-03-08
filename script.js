@@ -10,7 +10,7 @@ function encenderCanalRaw(id) {
         ocultarLoader()
         if (!response.ok) {
             // Si el servidor responde con un error, lanza un Error para manejarlo en el catch.
-            throw new Error('Error al apagar el canal');
+            throw new Error('Error al encender el canal');
         }
         return response.json(); // Convierte la respuesta del servidor a JSON.
     })
