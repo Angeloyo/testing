@@ -1,37 +1,9 @@
 // const url = '82.165.10.57:3000'
 const url = 'ap1.casaroja.app';
 
-document.getElementById('encender').addEventListener('click', () => {
-  mostrarLoader();
 
-    fetch(`https://${url}/api/canales/encender/raw`, { 
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    .then(response => {
-        ocultarLoader();
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
-      }
-      return response.json();
-    })
-    .then(data => {
-        ocultarLoader();
-      console.log(data);
-      document.getElementById('estadoEncenderCanal').textContent = 'Canal encendido. ID del contenedor: ' + data.containerId;
-      document.getElementById('estadoEncenderCanal').className = 'verde'; 
-    })
-    .catch((error) => {
-        ocultarLoader();
-      console.error('Error:', error);
-      document.getElementById('estadoEncenderCanal').textContent = 'Error al encender el canal';
-      document.getElementById('estadoEncenderCanal').className = 'rojo'; 
-    });
-  });
 
-  function encenderCanal(id) {
+function encenderCanalRaw(id) {
 
     fetch(`/api/canales/encender/raw/${id}`, { // Asegúrate de que la URL coincida con tu endpoint en el servidor.
         method: 'POST',
@@ -47,8 +19,7 @@ document.getElementById('encender').addEventListener('click', () => {
         // Manejo de la respuesta exitosa.
         console.log(data);
         alert(`Canal ${id} encendido con éxito`);
-        // Aquí puedes agregar cualquier lógica adicional que quieras ejecutar tras encender el canal.
-        // Por ejemplo, actualizar la interfaz de usuario para reflejar que el canal ahora está encendido.
+        obtenerCanalesYMostrar();
     })
     .catch(error => {
         console.error('Error al encender el canal:', error);
@@ -248,7 +219,8 @@ function obtenerCanalesYMostrar() {
                 const elemento = document.createElement('div');
                 elemento.innerHTML = `Nombre: ${canal.nombre}, ID: ${canal.id}, Docker ID: ${canal.docker_id || 'No Encendido'}
                                       <button onclick="eliminarCanal('${canal.id}')">Eliminar</button>
-                                      <button onclick="encenderCanal('${canal.id}')">Encender Raw</button>`;
+                                      <button onclick="encenderCanalRaw('${canal.id}')">Encender Raw</button>
+                                      <button onclick="apagarCanalRaw('${canal.id}')">Encender Raw</button>`;
                 listaCanales.appendChild(elemento);
             });
         })

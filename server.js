@@ -12,23 +12,7 @@ app.use(cors()); // Esto permite solicitudes de cualquier origen. Ajusta según 
 
 app.use(express.json());
 
-const fs = require('fs');
-const path = './containerId.txt';
-let containerId = ''; // Variable para almacenar el ID del contenedor
-
-
-app.post('/encender-canal', (req, res) => {
-  exec('docker run -d -p 8050:80 ghcr.io/martinbjeldbak/acestream-http-proxy', (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return res.status(500).send({ message: 'Error al encender el canal' });
-    }
-    containerId = stdout.trim();
-    fs.writeFileSync(path, containerId); // Escribe el ID del contenedor a un archivo
-    res.send({ message: 'Canal encendido con éxito', containerId });
-  });
-});
-
+// Encender canal raw (sin transcoding)
 app.post('/api/canales/encender/raw/:id', (req, res) => {
     const { id } = req.params; // Obtiene el ID del canal desde el parámetro URL
 
@@ -73,6 +57,46 @@ app.post('/api/canales/encender/raw/:id', (req, res) => {
     });
 });
 
+app.post('/api/canales/apagar/raw/:id', (req, res) => {
+    const { id } = req.params; // Obtiene el ID del canal desde el parámetro URL
+
+    // Primero, obtiene el docker_id del canal a apagar.
+    const getDockerIdQuery = `SELECT docker_id FROM canales WHERE id = ?`;
+    db.get(getDockerIdQuery, [id], (getErr, row) => {
+        
+        if (getErr) {
+            console.error(`Error al obtener el docker_id del canal: ${getErr}`);
+            return res.status(500).send({ message: 'Error al obtener el docker_id del canal' });
+        }
+
+        if (!row || !row.docker_id) {
+            // Si no se encuentra el canal o no tiene docker_id, envía una respuesta indicando que no existe o no está encendido
+            return res.status(404).send({ message: 'Canal no encontrado o no está encendido' });
+        }
+
+        const dockerId = row.docker_id;
+
+        // Detiene y elimina el contenedor Docker asociado al canal
+        exec(`docker stop ${dockerId} && docker rm ${dockerId}`, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`exec error: ${error}`);
+                return res.status(500).send({ message: 'Error al apagar el canal' });
+            }
+
+            // Actualiza la base de datos para eliminar los valores de docker_id y live_channel_id
+            const updateQuery = `UPDATE canales SET docker_id = NULL, live_channel_id = NULL WHERE id = ?`;
+            db.run(updateQuery, [id], function(updateErr) {
+                if (updateErr) {
+                    console.error(updateErr.message);
+                    return res.status(500).send({ message: 'Error al actualizar la información del canal en la base de datos' });
+                }
+                res.send({ message: 'Canal apagado con éxito', id });
+            });
+        });
+    });
+});
+
+
 
 function getNextAvailableId(callback) {
     // Selecciona todos los live_channel_id ordenados
@@ -102,18 +126,6 @@ function getNextAvailableId(callback) {
     });
 }
 
-
-
-app.post('/encender-canalT', (req, res) => {
-  exec('STREAM_ID=f096a64dd756a6d549aa7b12ee9acf7eee27e833 docker compose -p c1 up -d', (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return res.status(500).send({ message: 'Error al encender el canal' });
-    }
-    fs.writeFileSync(path, containerId); // Escribe el ID del contenedor a un archivo
-    res.send({ message: 'Canal transcoding encendido con éxito'});
-  });
-});
 
 app.post('/apagar-canal', (req, res) => {
     if (!containerId) {
