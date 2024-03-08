@@ -283,7 +283,9 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
             console.log(data);
             alert("Canal creado exitosamente");
-            // Opcional: actualiza la UI o limpia el formulario aquí
+            document.getElementById("nombre-canal").value = '';
+            document.getElementById("id-canal").value = '';
+            obtenerCanalesYMostrar();
         })
         .catch((error) => {
             console.error("Error al crear el canal:", error);
