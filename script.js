@@ -129,6 +129,10 @@ function apagarCanalTranscode(id) {
 }
 
 function verCanalTranscode(id) {
+    // Abrir una nueva ventana de inmediato, lo cual es directamente en respuesta a la acción del usuario.
+    const ventana = window.open('', '_blank');
+    if (ventana) ventana.document.write('Cargando...'); // Opcional: proporciona retroalimentación al usuario.
+
     fetch(`/api/canales/getLiveID/${id}`)
         .then(response => {
             if (!response.ok) {
@@ -139,14 +143,14 @@ function verCanalTranscode(id) {
         .then(data => {
             const liveChannelId = data.live_channel_id;
             const urlFinal = `https://${url}/watch/${liveChannelId}/output.m3u8`;
-            window.open(urlFinal, '_blank');
+            if (ventana) ventana.location.href = urlFinal; // Actualizar la URL de la ventana abierta.
         })
         .catch(error => {
             console.error('Error:', error);
             alert('Error al ver el canal. Por favor, intente de nuevo más tarde.');
+            if (ventana) ventana.close(); // Cerrar la ventana si ocurre un error.
         });
 }
-
 
 function mostrarLoader() {
     document.getElementById('loader').style.display = 'block';
