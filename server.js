@@ -224,8 +224,9 @@ db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS canales (
       id TEXT PRIMARY KEY,
-      nombre TEXT NOT NULL,
+      name TEXT NOT NULL,
       docker_id TEXT,
+      transcoding_id
       live_channel_id INTEGER
     )`
   );

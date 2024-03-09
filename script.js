@@ -201,7 +201,6 @@ function obtenerCanalesYMostrar() {
                                       <button onclick="encenderCanalTranscode('${canal.id}')">Encender Transcode</button>
                                       <button onclick="apagarCanalTranscode('${canal.id}')">Apagar Transcode</button>
                                       <button onclick="verCanalTranscode('${canal.id}')">Ver Transcode</button>
-                                      <br>
                                       `;
                 listaCanales.appendChild(elemento);
             });
