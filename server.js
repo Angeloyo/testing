@@ -252,7 +252,7 @@ app.post('/api/canales', (req, res) => {
   }
 
   const query = `INSERT INTO canales (id, name) VALUES (?, ?)`;
-  db.run(query, [id, name, null], function(err) {
+  db.run(query, [id, name], function(err) {
     if (err) {
       console.error(err.message);
       return res.status(500).send({ error: "Error al crear el canal." });
