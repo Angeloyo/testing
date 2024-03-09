@@ -3,7 +3,7 @@ const url = 'ap1.casaroja.app';
 
 function encenderCanalRaw(id) {
     mostrarLoader()
-    fetch(`/api/canales/encender/raw/${id}`, { // Asegúrate de que la URL coincida con tu endpoint en el servidor.
+    fetch(`https://${url}/api/canales/encender/raw/${id}`, { // Asegúrate de que la URL coincida con tu endpoint en el servidor.
         method: 'POST',
     })
     .then(response => {
@@ -30,7 +30,7 @@ function encenderCanalRaw(id) {
 
 function apagarCanalRaw(id) {
     mostrarLoader()
-    fetch(`/api/canales/apagar/raw/${id}`, { // Asegúrate de que la URL coincida con tu endpoint en el servidor.
+    fetch(`https://${url}/api/canales/apagar/raw/${id}`, { // Asegúrate de que la URL coincida con tu endpoint en el servidor.
         method: 'DELETE',
     })
     .then(response => {
@@ -58,7 +58,7 @@ function verCanalRaw(id) {
     const ventana = window.open('', '_blank');
     if (ventana) ventana.document.write('Cargando...'); 
 
-    fetch(`/api/canales/getLiveID/${id}`)
+    fetch(`https://${url}/api/canales/getLiveID/${id}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('No se pudo obtener la información del canal.');
@@ -79,7 +79,7 @@ function verCanalRaw(id) {
 
 function encenderCanalTranscode(id) {
     mostrarLoader()
-    fetch(`/api/canales/encender/transcode/${id}`, {
+    fetch(`https://${url}/api/canales/encender/transcode/${id}`, {
         method: 'POST',
     })
     .then(response => {
@@ -104,7 +104,7 @@ function encenderCanalTranscode(id) {
 
 function apagarCanalTranscode(id) {
     mostrarLoader()
-    fetch(`/api/canales/apagar/transcode/${id}`, { 
+    fetch(`https://${url}/api/canales/apagar/transcode/${id}`, { 
         method: 'DELETE',
     })
     .then(response => {
@@ -131,7 +131,7 @@ function verCanalTranscode(id) {
     const ventana = window.open('', '_blank');
     if (ventana) ventana.document.write('Cargando...'); 
 
-    fetch(`/api/canales/getLiveID/${id}`)
+    fetch(`https://${url}/api/canales/getLiveID/${id}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('No se pudo obtener la información del canal.');
@@ -163,7 +163,7 @@ window.onload = function() {
 };
 
 function eliminarCanal(id) {
-    fetch(`/api/canales/${id}`, {
+    fetch(`https://${url}/api/canales/${id}`, {
         method: 'DELETE',
     })
     .then(response => {
@@ -181,7 +181,7 @@ function eliminarCanal(id) {
 }
 
 function obtenerCanalesYMostrar() {
-    fetch('/api/canales')
+    fetch(`https://${url}/api/canales`)
         .then(function (response) {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -193,7 +193,10 @@ function obtenerCanalesYMostrar() {
             listaCanales.innerHTML = ''; // Limpiar la lista antes de mostrar los resultados
             canales.forEach(canal => {
                 const elemento = document.createElement('div');
-                elemento.innerHTML = `Nombre: ${canal.nombre}, ID: ${canal.id}, Docker ID: ${canal.docker_id || 'No Encendido'}
+                elemento.innerHTML = `<h3>Nombre: ${canal.nombre}</h3>
+                                      <h3>ID: ${canal.id}</h3>
+                                      <h3>Docker ID: ${canal.docker_id || 'No Encendido'}</h3>
+                                      <h3>Transcoding ID: ${canal.transcoding_id || 'No Encendido'}</h3>
                                       <button onclick="eliminarCanal('${canal.id}')">Eliminar</button>
                                       <button onclick="encenderCanalRaw('${canal.id}')">Encender Raw</button>
                                       <button onclick="apagarCanalRaw('${canal.id}')">Apagar Raw</button>
@@ -226,7 +229,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // console.log(datosCanal);
 
         // Envío de los datos al servidor usando fetch
-        fetch("/api/canales", {
+        fetch(`https://${url}/api/canales`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
