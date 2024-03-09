@@ -193,7 +193,7 @@ function obtenerCanalesYMostrar() {
             listaCanales.innerHTML = ''; // Limpiar la lista antes de mostrar los resultados
             canales.forEach(canal => {
                 const elemento = document.createElement('div');
-                elemento.innerHTML = `<h3>Nombre: ${canal.nombre}</h3>
+                elemento.innerHTML = `<h3>Nombre: ${canal.name}</h3>
                                       <h3>ID: ${canal.id}</h3>
                                       <h3>Docker ID: ${canal.docker_id || 'No Encendido'}</h3>
                                       <h3>Transcoding ID: ${canal.transcoding_id || 'No Encendido'}</h3>
@@ -220,11 +220,11 @@ document.addEventListener("DOMContentLoaded", function() {
     form.addEventListener("submit", function(event) {
         event.preventDefault(); // Evitar el envío del formulario por defecto
 
-        const nombre = document.getElementById("nombre-canal").value;
+        const name = document.getElementById("channel-name").value;
         const id = document.getElementById("id-canal").value;
 
         // Objeto con los datos del canal a crear
-        const datosCanal = { id, nombre };
+        const datosCanal = { id, name };
 
         // console.log(datosCanal);
 
@@ -245,7 +245,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
             // console.log(data);
             alert("Canal creado exitosamente");
-            document.getElementById("nombre-canal").value = '';
+            document.getElementById("channel-name").value = '';
             document.getElementById("id-canal").value = '';
             obtenerCanalesYMostrar();
         })

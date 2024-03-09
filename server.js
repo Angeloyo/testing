@@ -246,13 +246,13 @@ function cerrarDB() {
 
 // Crear canal
 app.post('/api/canales', (req, res) => {
-  const { id, nombre } = req.body;
-  if (!id || !nombre) {
+  const { id, name } = req.body;
+  if (!id || !name) {
     return res.status(400).send({ error: "El id y el nombre son requeridos." });
   }
 
-  const query = `INSERT INTO canales (id, nombre, docker_id) VALUES (?, ?, ?)`;
-  db.run(query, [id, nombre, null], function(err) {
+  const query = `INSERT INTO canales (id, name, docker_id) VALUES (?, ?, ?)`;
+  db.run(query, [id, name, null], function(err) {
     if (err) {
       console.error(err.message);
       return res.status(500).send({ error: "Error al crear el canal." });
@@ -263,7 +263,7 @@ app.post('/api/canales', (req, res) => {
 
 // Obtener todos los canales
 app.get('/api/canales', (req, res) => {
-  db.all("SELECT id, nombre, docker_id FROM canales", [], (err, filas) => {
+  db.all("SELECT id, name, docker_id FROM canales", [], (err, filas) => {
     if (err) {
       console.error(err.message);
       res.status(500).send({ error: "Error al obtener los canales" });
