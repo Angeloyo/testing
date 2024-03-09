@@ -226,7 +226,7 @@ db.serialize(() => {
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
       docker_id TEXT,
-      transcoding_id
+      transcoding_id,
       live_channel_id INTEGER
     )`
   );

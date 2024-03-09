@@ -193,17 +193,18 @@ function obtenerCanalesYMostrar() {
             listaCanales.innerHTML = ''; // Limpiar la lista antes de mostrar los resultados
             canales.forEach(canal => {
                 const elemento = document.createElement('div');
-                elemento.innerHTML = `<h3>Nombre: ${canal.name}</h3>
-                                      <h3>ID: ${canal.id}</h3>
-                                      <h3>Docker ID: ${canal.docker_id || 'No Encendido'}</h3>
-                                      <h3>Transcoding ID: ${canal.transcoding_id || 'No Encendido'}</h3>
-                                      <button onclick="eliminarCanal('${canal.id}')">Eliminar</button>
-                                      <button onclick="encenderCanalRaw('${canal.id}')">Encender Raw</button>
-                                      <button onclick="apagarCanalRaw('${canal.id}')">Apagar Raw</button>
-                                      <button onclick="verCanalRaw('${canal.id}')">Ver Raw</button>
-                                      <button onclick="encenderCanalTranscode('${canal.id}')">Encender Transcode</button>
-                                      <button onclick="apagarCanalTranscode('${canal.id}')">Apagar Transcode</button>
-                                      <button onclick="verCanalTranscode('${canal.id}')">Ver Transcode</button>
+                elemento.classList.add("m-7")
+                elemento.innerHTML = `<h3>Nombre: ${canal.name}</p>
+                                      <p>ID: ${canal.id}</p>
+                                      <p>Docker ID: ${canal.docker_id || 'No Encendido'}</p>
+                                      <p>Transcoding ID: ${canal.transcoding_id || 'No Encendido'}</p>
+                                      <button class="channel-button" onclick="eliminarCanal('${canal.id}')">Eliminar</button>
+                                      <button class="channel-button" onclick="encenderCanalRaw('${canal.id}')">Encender Raw</button>
+                                      <button class="channel-button" onclick="apagarCanalRaw('${canal.id}')">Apagar Raw</button>
+                                      <button class="channel-button" onclick="verCanalRaw('${canal.id}')">Ver Raw</button>
+                                      <button class="channel-button" onclick="encenderCanalTranscode('${canal.id}')">Encender Transcode</button>
+                                      <button class="channel-button" onclick="apagarCanalTranscode('${canal.id}')">Apagar Transcode</button>
+                                      <button class="channel-button" onclick="verCanalTranscode('${canal.id}')">Ver Transcode</button>
                                       `;
                 listaCanales.appendChild(elemento);
             });
