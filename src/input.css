@@ -2,22 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.loader {
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #3498db; /* Blue */
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  animation: spin 2s linear infinite;
-  display: none; /* Ocultar por defecto */
-  transform: translate(-50%, -50%);
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 #estadoCanal {
     font-weight: bold;
 }
@@ -32,3 +16,22 @@
     @apply bg-blue-500 text-white py-2 px-4 rounded transition duration-300 ease-in-out m-1;
     @apply hover:bg-blue-700;
 }
+
+@keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .custom-spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3); /* Color del borde "transparente" */
+    border-top-color: #fff; /* Color del borde superior */
+    border-radius: 50%; /* Hace que sea un círculo */
+    width: 40px; /* Tamaño del spinner */
+    height: 40px; /* Tamaño del spinner */
+    animation: spin 1s ease-in-out infinite; /* Aplica la animación */
+  }
+  
