@@ -2,12 +2,12 @@
 const url = 'ap1.casaroja.app';
 
 function encenderCanalRaw(id) {
-    mostrarLoader()
+    showLoader(`Encendiendo canal sin transcoding, id ${id}`);
     fetch(`https://${url}/api/canales/encender/raw/${id}`, { // Asegúrate de que la URL coincida con tu endpoint en el servidor.
         method: 'POST',
     })
     .then(response => {
-        ocultarLoader()
+        hideLoader();
         if (!response.ok) {
             // Si el servidor responde con un error, lanza un Error para manejarlo en el catch.
             throw new Error('Error al encender el canal');
@@ -15,26 +15,26 @@ function encenderCanalRaw(id) {
         return response.json(); // Convierte la respuesta del servidor a JSON.
     })
     .then(data => {
-        ocultarLoader()
+        hideLoader();
         // Manejo de la respuesta exitosa.
         // console.log(data);
-        alert(`Canal ${id} encendido con éxito`);
+        //alert(`Canal ${id} encendido con éxito`);
         obtenerCanalesYMostrar();
     })
     .catch(error => {
-        ocultarLoader()
+        hideLoader();
         console.error('Error al encender el canal:', error);
-        alert('No se pudo encender el canal. Verifica la consola para más detalles.');
+        //alert('No se pudo encender el canal. Verifica la consola para más detalles.');
     });
 }
 
 function apagarCanalRaw(id) {
-    mostrarLoader()
+    showLoader(`Apagando canal sin transcoding, id ${id}`);
     fetch(`https://${url}/api/canales/apagar/raw/${id}`, { // Asegúrate de que la URL coincida con tu endpoint en el servidor.
         method: 'DELETE',
     })
     .then(response => {
-        ocultarLoader()
+        hideLoader();
         if (!response.ok) {
             // Si el servidor responde con un error, lanza un Error para manejarlo en el catch.
             throw new Error('Error al apagar el canal');
@@ -42,15 +42,15 @@ function apagarCanalRaw(id) {
         return response.json(); // Convierte la respuesta del servidor a JSON.
     })
     .then(data => {
-        ocultarLoader()
+        hideLoader();
         // console.log(data);
-        alert(`Canal ${id} apagado con éxito`);
+        //alert(`Canal ${id} apagado con éxito`);
         obtenerCanalesYMostrar();
     })
     .catch(error => {
-        ocultarLoader()
+        hideLoader();
         console.error('Error al apagar el canal:', error);
-        alert('No se pudo apagar el canal. Verifica la consola para más detalles.');
+        //alert('No se pudo apagar el canal. Verifica la consola para más detalles.');
     });
 }
 
@@ -72,58 +72,58 @@ function verCanalRaw(id) {
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al ver el canal. Por favor, intente de nuevo más tarde.');
+            //alert('Error al ver el canal. Por favor, intente de nuevo más tarde.');
             if (ventana) ventana.close(); 
         });
 }
 
 function encenderCanalTranscode(id) {
-    mostrarLoader()
+    showLoader(`Encendiendo canal con transcoding, id ${id}`);
     fetch(`https://${url}/api/canales/encender/transcode/${id}`, {
         method: 'POST',
     })
     .then(response => {
-        ocultarLoader()
+        hideLoader();
         if (!response.ok) {
             throw new Error('Error al encender el canal');
         }
         return response.json();
     })
     .then(data => {
-        ocultarLoader()
+        hideLoader();
         console.log(data);
-        alert(`Canal ${id} encendido con éxito`);
+        //alert(`Canal ${id} encendido con éxito`);
         obtenerCanalesYMostrar();
     })
     .catch(error => {
-        ocultarLoader()
+        hideLoader();
         console.error('Error al encender el canal:', error);
-        alert('No se pudo encender el canal. Verifica la consola para más detalles.');
+        //alert('No se pudo encender el canal. Verifica la consola para más detalles.');
     });
 }
 
 function apagarCanalTranscode(id) {
-    mostrarLoader()
+    showLoader(`Apagando canal con transcoding, id ${id}`);
     fetch(`https://${url}/api/canales/apagar/transcode/${id}`, { 
         method: 'DELETE',
     })
     .then(response => {
-        ocultarLoader()
+        hideLoader();
         if (!response.ok) {
             throw new Error('Error al apagar el canal');
         }
         return response.json(); 
     })
     .then(data => {
-        ocultarLoader()
+        hideLoader();
         // console.log(data);
-        alert(`Canal ${id} apagado con éxito`);
+        //alert(`Canal ${id} apagado con éxito`);
         obtenerCanalesYMostrar();
     })
     .catch(error => {
-        ocultarLoader()
+        hideLoader();
         console.error('Error al apagar el canal:', error);
-        alert('No se pudo apagar el canal. Verifica la consola para más detalles.');
+        //alert('No se pudo apagar el canal. Verifica la consola para más detalles.');
     });
 }
 
@@ -145,17 +145,21 @@ function verCanalTranscode(id) {
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error al ver el canal. Por favor, intente de nuevo más tarde.');
+            //alert('Error al ver el canal. Por favor, intente de nuevo más tarde.');
             if (ventana) ventana.close(); 
         });
 }
 
-function mostrarLoader() {
-    document.getElementById('loader').style.display = 'block';
+function showLoader(msg) {
+  const loadingScreen = document.getElementById('loading-screen');
+  const loadingMessage = document.getElementById('loading-message');
+  loadingMessage.textContent = msg; // Establece el mensaje proporcionado
+  loadingScreen.classList.remove('hidden'); // Muestra la pantalla de carga
 }
 
-function ocultarLoader() {
-    document.getElementById('loader').style.display = 'none';
+function hideLoader() {
+  const loadingScreen = document.getElementById('loading-screen');
+  loadingScreen.classList.add('hidden'); // Oculta la pantalla de carga
 }
 
 window.onload = function() {
@@ -174,7 +178,7 @@ function eliminarCanal(id) {
     })
     .then(data => {
         // console.log(data.mensaje);
-        alert("Canal eliminado exitosamente");
+        // //alert("Canal eliminado exitosamente");
         obtenerCanalesYMostrar(); // Recargar la lista de canales
     })
     .catch(error => console.error("Error al eliminar el canal:", error));
@@ -186,11 +190,11 @@ function obtenerCanalesYMostrar() {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            return response.json(); // Parsea la respuesta JSON
+            return response.json(); 
         })
         .then(function (canales) {
             const listaCanales = document.getElementById('lista-canales');
-            listaCanales.innerHTML = ''; // Limpiar la lista antes de mostrar los resultados
+            listaCanales.innerHTML = ''; 
             canales.forEach(canal => {
                 const elemento = document.createElement('div');
                 elemento.classList.add("m-7")
@@ -245,7 +249,7 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(data => {
             // console.log(data);
-            alert("Canal creado exitosamente");
+            ////alert("Canal creado exitosamente");
             document.getElementById("channel-name").value = '';
             document.getElementById("id-canal").value = '';
             obtenerCanalesYMostrar();

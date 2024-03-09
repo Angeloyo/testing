@@ -150,7 +150,7 @@ app.post('/api/canales/encender/transcode/:id', (req, res) => {
                 }
                 const containerId = `transcoding-${liveChannelId}`;
 
-                const updateQuery = `UPDATE canales SET docker_id = ?, live_channel_id = ? WHERE id = ?`;
+                const updateQuery = `UPDATE canales SET transcoding_id = ?, live_channel_id = ? WHERE id = ?`;
                 db.run(updateQuery, [containerId, liveChannelId, id], function(updateErr) {
                     if (updateErr) {
                         console.error(updateErr.message);
@@ -167,15 +167,15 @@ app.post('/api/canales/encender/transcode/:id', (req, res) => {
 app.delete('/api/canales/apagar/transcode/:id', (req, res) => {
     const { id } = req.params; 
 
-    const getDockerIdQuery = `SELECT docker_id, live_channel_id FROM canales WHERE id = ?`;
+    const getDockerIdQuery = `SELECT transcoding_id, live_channel_id FROM canales WHERE id = ?`;
     db.get(getDockerIdQuery, [id], (getErr, row) => {
 
         if (getErr) {
-            console.error(`Error al obtener el docker_id del canal: ${getErr}`);
-            return res.status(500).send({ message: 'Error al obtener el docker_id del canal' });
+            console.error(`Error al obtener el transcoding_id del canal: ${getErr}`);
+            return res.status(500).send({ message: 'Error al obtener el transcoding_id del canal' });
         }
 
-        if (!row || !row.docker_id) {
+        if (!row || !row.transcoding_id) {
             return res.status(404).send({ message: 'Canal no encontrado o no está encendido' });
         }
 
@@ -185,7 +185,7 @@ app.delete('/api/canales/apagar/transcode/:id', (req, res) => {
                 return res.status(500).send({ message: 'Error al apagar el canal' });
             }
 
-            const updateQuery = `UPDATE canales SET docker_id = NULL, live_channel_id = NULL WHERE id = ?`;
+            const updateQuery = `UPDATE canales SET transcoding_id = NULL, live_channel_id = NULL WHERE id = ?`;
             db.run(updateQuery, [id], function(updateErr) {
                 if (updateErr) {
                     console.error(updateErr.message);
@@ -251,7 +251,7 @@ app.post('/api/canales', (req, res) => {
     return res.status(400).send({ error: "El id y el nombre son requeridos." });
   }
 
-  const query = `INSERT INTO canales (id, name, docker_id) VALUES (?, ?, ?)`;
+  const query = `INSERT INTO canales (id, name) VALUES (?, ?)`;
   db.run(query, [id, name, null], function(err) {
     if (err) {
       console.error(err.message);
@@ -263,7 +263,7 @@ app.post('/api/canales', (req, res) => {
 
 // Obtener todos los canales
 app.get('/api/canales', (req, res) => {
-  db.all("SELECT id, name, docker_id FROM canales", [], (err, filas) => {
+  db.all("SELECT id, name, docker_id, transcoding_id FROM canales", [], (err, filas) => {
     if (err) {
       console.error(err.message);
       res.status(500).send({ error: "Error al obtener los canales" });
