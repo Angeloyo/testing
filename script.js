@@ -7,19 +7,26 @@ function encenderCanalRaw(id) {
         method: 'POST',
     })
     .then(response => {
-        hideLoader();
         if (!response.ok) {
-            // Si el servidor responde con un error, lanza un Error para manejarlo en el catch.
+            hideLoader();
             throw new Error('Error al encender el canal');
         }
         return response.json(); // Convierte la respuesta del servidor a JSON.
     })
     .then(data => {
-        hideLoader();
-        // Manejo de la respuesta exitosa.
-        // console.log(data);
-        //alert(`Canal ${id} encendido con éxito`);
-        obtenerCanalesYMostrar();
+        let counter = 10; 
+        loadingMessage.textContent = `Por favor, espera ${counter} segundos mientras el stream se estabiliza.`; 
+        const intervalId = setInterval(() => {
+            counter--; 
+            if (counter > 0) {
+                loadingMessage.textContent = `Por favor, espera ${counter} segundos mientras el stream se estabiliza.`; 
+            } else {
+                clearInterval(intervalId); 
+                loadingMessage.textContent = ''; 
+                hideLoader(); 
+                obtenerCanalesYMostrar(); 
+            }
+        }, 1000); 
     })
     .catch(error => {
         hideLoader();
@@ -34,8 +41,8 @@ function apagarCanalRaw(id) {
         method: 'DELETE',
     })
     .then(response => {
-        hideLoader();
         if (!response.ok) {
+            hideLoader();
             // Si el servidor responde con un error, lanza un Error para manejarlo en el catch.
             throw new Error('Error al apagar el canal');
         }
@@ -79,30 +86,31 @@ function verCanalRaw(id) {
 
 function encenderCanalTranscode(id) {
     showLoader(`Encendiendo canal con transcoding, id ${id}`);
-    const loadingMessage = document.getElementById('loadingMessage');
+    const loadingMessage = document.getElementById('loading-message');
     fetch(`https://${url}/api/canales/encender/transcode/${id}`, {
         method: 'POST',
     })
     .then(response => {
-        hideLoader();
         if (!response.ok) {
+            hideLoader();
             throw new Error('Error al encender el canal');
         }
         return response.json();
     })
     .then(data => {
-        let counter = 5; 
+
+        let counter = 15; 
         loadingMessage.textContent = `Por favor, espera ${counter} segundos mientras el stream se estabiliza.`; 
 
         const intervalId = setInterval(() => {
             counter--; 
-            loadingMessage.textContent = `Por favor, espera ${counter} segundos mientras el stream se estabiliza.`; 
-
-            if (counter === 0) {
-                clearInterval(textContent); 
-                hideLoader();
-                loadingMessage.innerText = ''; 
-                obtenerCanalesYMostrar();
+            if (counter > 0) {
+                loadingMessage.textContent = `Por favor, espera ${counter} segundos mientras el stream se estabiliza.`; 
+            } else {
+                clearInterval(intervalId); 
+                loadingMessage.textContent = ''; 
+                hideLoader(); 
+                obtenerCanalesYMostrar(); 
             }
         }, 1000); 
     })
@@ -119,8 +127,8 @@ function apagarCanalTranscode(id) {
         method: 'DELETE',
     })
     .then(response => {
-        hideLoader();
         if (!response.ok) {
+            hideLoader();
             throw new Error('Error al apagar el canal');
         }
         return response.json(); 
