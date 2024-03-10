@@ -213,7 +213,8 @@ function obtenerCanalesYMostrar() {
                             <p>ID: ${canal.id}</p>
                             <p>Docker ID: ${canal.docker_id || 'No Encendido'}</p>
                             <p>Transcoding ID: ${canal.transcoding_id || 'No Encendido'}</p>
-                            <p>Live Channel ID: ${canal.live_channel_id || 'No Encendido'}</p>
+                            <p>Raw Live ID: ${canal.raw_live_id || 'No Encendido'}</p>
+                            <p>Transcoding Live ID: ${canal.transcoding_live_id || 'No Encendido'}</p>
                             <button class="channel-button" onclick="eliminarCanal('${canal.id}')">Eliminar</button>
                             <br>
                             `;

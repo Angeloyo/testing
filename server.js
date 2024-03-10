@@ -13,7 +13,7 @@ app.use(cors()); // Esto permite solicitudes de cualquier origen. Ajusta según 
 app.use(express.json());
 
 function getNextAvailableId(callback) {
-    db.all("SELECT live_channel_id FROM canales ORDER BY live_channel_id ASC", [], (err, rows) => {
+    db.all("SELECT raw_live_id, transcoding_live_id FROM canales ORDER BY raw_live_id ASC, transcoding_live_id ASC", [], (err, rows) => {
         if (err) {
             console.error(`Error de base de datos: ${err.message}`);
             callback(err, null);
@@ -22,10 +22,9 @@ function getNextAvailableId(callback) {
 
         let nextAvailableId = 0;
 
-        // live_channel_id se maneje como un número
-        const liveChannelIds = rows.map(row => Number(row.live_channel_id));
+        const combinedIds = rows.flatMap(row => [Number(row.raw_live_id), Number(row.transcoding_live_id)]).sort((a, b) => a - b);
 
-        while (liveChannelIds.includes(nextAvailableId)) {
+        while (combinedIds.includes(nextAvailableId)) {
             nextAvailableId++;
         }
 
@@ -66,7 +65,7 @@ app.post('/api/canales/encender/raw/:id', (req, res) => {
                 }
                 const containerId = stdout.trim();
 
-                const updateQuery = `UPDATE canales SET docker_id = ?, live_channel_id = ? WHERE id = ?`;
+                const updateQuery = `UPDATE canales SET docker_id = ?, raw_live_id = ? WHERE id = ?`;
                 db.run(updateQuery, [containerId, liveChannelId, id], function(updateErr) {
                     if (updateErr) {
                         console.error(updateErr.message);
@@ -107,7 +106,7 @@ app.delete('/api/canales/apagar/raw/:id', (req, res) => {
             }
 
             // Actualiza la base de datos para eliminar los valores de docker_id y live_channel_id
-            const updateQuery = `UPDATE canales SET docker_id = NULL, live_channel_id = NULL WHERE id = ?`;
+            const updateQuery = `UPDATE canales SET docker_id = NULL, raw_live_id = NULL WHERE id = ?`;
             db.run(updateQuery, [id], function(updateErr) {
                 if (updateErr) {
                     console.error(updateErr.message);
@@ -150,7 +149,7 @@ app.post('/api/canales/encender/transcode/:id', (req, res) => {
                 }
                 const transcodingId = `transcoding-${liveChannelId}`;
 
-                const updateQuery = `UPDATE canales SET transcoding_id = ?, live_channel_id = ? WHERE id = ?`;
+                const updateQuery = `UPDATE canales SET transcoding_id = ?, transcoding_live_id = ? WHERE id = ?`;
                 db.run(updateQuery, [transcodingId, liveChannelId, id], function(updateErr) {
                     if (updateErr) {
                         console.error(updateErr.message);
@@ -185,7 +184,7 @@ app.delete('/api/canales/apagar/transcode/:id', (req, res) => {
                 return res.status(500).send({ message: 'Error al apagar el canal' });
             }
 
-            const updateQuery = `UPDATE canales SET transcoding_id = NULL, live_channel_id = NULL WHERE id = ?`;
+            const updateQuery = `UPDATE canales SET transcoding_id = NULL, transcoding_live_id = NULL WHERE id = ?`;
             db.run(updateQuery, [id], function(updateErr) {
                 if (updateErr) {
                     console.error(updateErr.message);
@@ -227,7 +226,8 @@ db.serialize(() => {
       name TEXT NOT NULL,
       docker_id TEXT,
       transcoding_id,
-      live_channel_id INTEGER
+      raw_live_id INTEGER,
+      transcoding_live_id INTEGER
     )`
   );
 });
@@ -263,7 +263,7 @@ app.post('/api/canales', (req, res) => {
 
 // Obtener todos los canales
 app.get('/api/canales', (req, res) => {
-  db.all("SELECT id, name, docker_id, transcoding_id, live_channel_id FROM canales", [], (err, filas) => {
+  db.all("SELECT id, name, docker_id, transcoding_id, raw_live_id, transcoding_live_id FROM canales", [], (err, filas) => {
     if (err) {
       console.error(err.message);
       res.status(500).send({ error: "Error al obtener los canales" });
