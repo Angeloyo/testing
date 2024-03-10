@@ -207,7 +207,7 @@ app.get('/api/canales/getLiveID/:id', (req, res) => {
             return;
         }
         if (row) {
-            res.status(200).send({ raw_live_id: row.raw_live_id }, { transcoding_live_id: row.transcoding_live_id });
+            res.status(200).send({ raw_live_id: row.raw_live_id, transcoding_live_id: row.transcoding_live_id });
         } else {
             res.status(404).send({ error: 'Canal no encontrado' });
         }
