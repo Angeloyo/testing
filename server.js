@@ -199,21 +199,17 @@ app.delete('/api/canales/apagar/transcode/:id', (req, res) => {
 app.get('/api/canales/getLiveID/:id', (req, res) => {
     const { id } = req.params; // Extrae el ID del canal de los parámetros de la URL
 
-    // Consulta para obtener el live_channel_id del canal específico
-    const query = 'SELECT live_channel_id FROM canales WHERE id = ?';
+    const query = 'SELECT raw_live_id, transcoding_live_id FROM canales WHERE id = ?';
 
     db.get(query, [id], (err, row) => {
         if (err) {
-            // Maneja cualquier error que ocurra durante la consulta
             console.error('Error al realizar la consulta en la base de datos', err);
             res.status(500).send({ error: 'Error al consultar la base de datos' });
             return;
         }
         if (row) {
-            // Si se encuentra el canal, devuelve el live_channel_id
-            res.status(200).send({ live_channel_id: row.live_channel_id });
+            res.status(200).send({ raw_live_id: row.raw_live_id }, { transcoding_live_id: row.transcoding_live_id });
         } else {
-            // Si no se encuentra el canal, devuelve un error 404
             res.status(404).send({ error: 'Canal no encontrado' });
         }
     });

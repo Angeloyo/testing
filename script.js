@@ -66,8 +66,8 @@ function verCanalRaw(id) {
             return response.json();
         })
         .then(data => {
-            const liveChannelId = data.live_channel_id; // Asume que el servidor devuelve un objeto con esta propiedad.
-            const urlFinal = `https://${url}/watch/${liveChannelId}/ace/manifest.m3u8?id=${id}`;
+            const rawLiveId = data.raw_live_id; // Asume que el servidor devuelve un objeto con esta propiedad.
+            const urlFinal = `https://${url}/watch/${rawLiveId}/ace/manifest.m3u8?id=${id}`;
             if (ventana) ventana.location.href = urlFinal; 
         })
         .catch(error => {
@@ -92,14 +92,14 @@ function encenderCanalTranscode(id) {
     })
     .then(data => {
         let counter = 5; 
-        loadingMessage.innerText = `Por favor, espera ${counter} segundos mientras el stream se estabiliza.`; 
+        loadingMessage.textContent = `Por favor, espera ${counter} segundos mientras el stream se estabiliza.`; 
 
         const intervalId = setInterval(() => {
             counter--; 
-            loadingMessage.innerText = `Por favor, espera ${counter} segundos mientras el stream se estabiliza.`; 
+            loadingMessage.textContent = `Por favor, espera ${counter} segundos mientras el stream se estabiliza.`; 
 
             if (counter === 0) {
-                clearInterval(intervalId); 
+                clearInterval(textContent); 
                 hideLoader();
                 loadingMessage.innerText = ''; 
                 obtenerCanalesYMostrar();
@@ -150,8 +150,8 @@ function verCanalTranscode(id) {
             return response.json();
         })
         .then(data => {
-            const liveChannelId = data.live_channel_id;
-            const urlFinal = `https://${url}/watch/${liveChannelId}/output.m3u8`;
+            const transcodingLiveId = data.transcoding_live_id;
+            const urlFinal = `https://${url}/watch/${transcodingLiveId}/output.m3u8`;
             if (ventana) ventana.location.href = urlFinal; 
         })
         .catch(error => {
@@ -164,8 +164,8 @@ function verCanalTranscode(id) {
 function showLoader(msg, seconds) {
   const loadingScreen = document.getElementById('loading-screen');
   const loadingMessage = document.getElementById('loading-message');
-  loadingMessage.textContent = msg; // Establece el mensaje proporcionado
-  loadingScreen.classList.remove('hidden'); // Muestra la pantalla de carga
+  loadingMessage.textContent = msg; 
+  loadingScreen.classList.remove('hidden'); 
 }
 
 function hideLoader() {
