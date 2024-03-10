@@ -3,6 +3,7 @@ const url = 'ap1.casaroja.app';
 
 function encenderCanalRaw(id) {
     showLoader(`Encendiendo canal sin transcoding, id ${id}`);
+    const loadingMessage = document.getElementById('loading-message');
     fetch(`https://${url}/api/canales/encender/raw/${id}`, { // Asegúrate de que la URL coincida con tu endpoint en el servidor.
         method: 'POST',
     })
@@ -99,7 +100,7 @@ function encenderCanalTranscode(id) {
     })
     .then(data => {
 
-        let counter = 15; 
+        let counter = 30; 
         loadingMessage.textContent = `Por favor, espera ${counter} segundos mientras el stream se estabiliza.`; 
 
         const intervalId = setInterval(() => {
