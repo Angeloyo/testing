@@ -194,22 +194,40 @@ function obtenerCanalesYMostrar() {
         })
         .then(function (canales) {
             const listaCanales = document.getElementById('lista-canales');
-            listaCanales.innerHTML = ''; 
+            listaCanales.innerHTML = ''; // Limpia la lista antes de añadir los elementos actualizados
             canales.forEach(canal => {
                 const elemento = document.createElement('div');
-                elemento.classList.add("m-7")
-                elemento.innerHTML = `<h3>Nombre: ${canal.name}</p>
-                                      <p>ID: ${canal.id}</p>
-                                      <p>Docker ID: ${canal.docker_id || 'No Encendido'}</p>
-                                      <p>Transcoding ID: ${canal.transcoding_id || 'No Encendido'}</p>
-                                      <button class="channel-button" onclick="eliminarCanal('${canal.id}')">Eliminar</button>
-                                      <button class="channel-button" onclick="encenderCanalRaw('${canal.id}')">Encender Raw</button>
-                                      <button class="channel-button" onclick="apagarCanalRaw('${canal.id}')">Apagar Raw</button>
-                                      <button class="channel-button" onclick="verCanalRaw('${canal.id}')">Ver Raw</button>
-                                      <button class="channel-button" onclick="encenderCanalTranscode('${canal.id}')">Encender Transcode</button>
-                                      <button class="channel-button" onclick="apagarCanalTranscode('${canal.id}')">Apagar Transcode</button>
-                                      <button class="channel-button" onclick="verCanalTranscode('${canal.id}')">Ver Transcode</button>
-                                      `;
+                elemento.classList.add("m-7");
+                let html = `<h3>Nombre: ${canal.name}</h3>
+                            <p>ID: ${canal.id}</p>
+                            <p>Docker ID: ${canal.docker_id || 'No Encendido'}</p>
+                            <p>Transcoding ID: ${canal.transcoding_id || 'No Encendido'}</p>
+                            <button class="channel-button" onclick="eliminarCanal('${canal.id}')">Eliminar</button>
+                            <br>
+                            `;
+                
+                if (canal.docker_id) {
+                    html += `<button class="channel-button" onclick="apagarCanalRaw('${canal.id}')">Apagar Raw</button>
+                             <button class="channel-button" onclick="verCanalRaw('${canal.id}')">Ver Raw</button>
+                             <br>
+                             `;
+                }
+                else {
+                    html += `<button class="channel-button" onclick="encenderCanalRaw('${canal.id}')">Encender Raw</button>
+                             <br>
+                             `;
+                }
+
+                if (canal.transcoding_id) {
+                    html += `<button class="channel-button" onclick="apagarCanalTranscode('${canal.id}')">Apagar Transcode</button>
+                             <button class="channel-button" onclick="verCanalTranscode('${canal.id}')">Ver Transcode</button>`;
+                }
+                else {
+                    html += `<button class="channel-button" onclick="encenderCanalTranscode('${canal.id}')">Encender Transcode</button>`;
+                }
+                
+                
+                elemento.innerHTML = html;
                 listaCanales.appendChild(elemento);
             });
         })
@@ -217,6 +235,7 @@ function obtenerCanalesYMostrar() {
             console.error('Error al obtener los canales:', error);
         });
 }
+
 
 // Crear canal form
 document.addEventListener("DOMContentLoaded", function() {
