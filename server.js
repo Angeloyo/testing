@@ -105,7 +105,6 @@ app.delete('/api/canales/apagar/raw/:id', (req, res) => {
                 return res.status(500).send({ message: 'Error al apagar el canal' });
             }
 
-            // Actualiza la base de datos para eliminar los valores de docker_id y live_channel_id
             const updateQuery = `UPDATE canales SET docker_id = NULL, raw_live_id = NULL WHERE id = ?`;
             db.run(updateQuery, [id], function(updateErr) {
                 if (updateErr) {
@@ -135,27 +134,27 @@ app.post('/api/canales/encender/transcode/:id', (req, res) => {
         }
 
         // Si el canal existe, procede con la lógica para encenderlo
-        getNextAvailableId((err, liveChannelId) => {
+        getNextAvailableId((err, transcodingLiveId) => {
             if (err) {
                 return res.status(500).send({ message: 'Error al obtener el próximo liveChannelId disponible' });
             }
 
-            const port = 8050 + liveChannelId;
+            const port = 8050 + transcodingLiveId;
 
-            exec(`STREAM_ID=${id} LIVE_CHANNEL_ID=${liveChannelId} docker compose -p transcoding-${liveChannelId} up -d`, (error, stdout) => {
+            exec(`STREAM_ID=${id} LIVE_CHANNEL_ID=${transcodingLiveId} docker compose -p transcoding-${transcodingLiveId} up -d`, (error, stdout) => {
                 if (error) {
                     console.error(`exec error: ${error}`);
                     return res.status(500).send({ message: 'Error al encender el canal'});
                 }
-                const transcodingId = `transcoding-${liveChannelId}`;
+                const transcodingId = `transcoding-${transcodingLiveId}`;
 
                 const updateQuery = `UPDATE canales SET transcoding_id = ?, transcoding_live_id = ? WHERE id = ?`;
-                db.run(updateQuery, [transcodingId, liveChannelId, id], function(updateErr) {
+                db.run(updateQuery, [transcodingId, transcodingLiveId, id], function(updateErr) {
                     if (updateErr) {
                         console.error(updateErr.message);
                         return res.status(500).send({ message: 'Error al actualizar la información del canal' });
                     }
-                    res.send({ message: 'Canal encendido con éxito', id, liveChannelId, port, transcodingId });
+                    res.send({ message: 'Canal encendido con éxito', id, transcodingLiveId, port, transcodingId });
                 });
             });
         });
@@ -166,7 +165,7 @@ app.post('/api/canales/encender/transcode/:id', (req, res) => {
 app.delete('/api/canales/apagar/transcode/:id', (req, res) => {
     const { id } = req.params; 
 
-    const getDockerIdQuery = `SELECT transcoding_id, live_channel_id FROM canales WHERE id = ?`;
+    const getDockerIdQuery = `SELECT transcoding_id, transcoding_live_id FROM canales WHERE id = ?`;
     db.get(getDockerIdQuery, [id], (getErr, row) => {
 
         if (getErr) {
@@ -178,7 +177,7 @@ app.delete('/api/canales/apagar/transcode/:id', (req, res) => {
             return res.status(404).send({ message: 'Canal no encontrado o no está encendido' });
         }
 
-        exec(`docker compose -p transcoding-${row.live_channel_id} kill && docker compose -p transcoding-${row.live_channel_id} rm -f`, (error, stdout, stderr) => {
+        exec(`docker compose -p transcoding-${row.transcoding_live_id} kill && docker compose -p transcoding-${row.transcoding_live_id} rm -f`, (error, stdout, stderr) => {
             if (error) {
                 console.error(`exec error: ${error}`);
                 return res.status(500).send({ message: 'Error al apagar el canal' });
