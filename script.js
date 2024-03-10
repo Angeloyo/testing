@@ -79,6 +79,7 @@ function verCanalRaw(id) {
 
 function encenderCanalTranscode(id) {
     showLoader(`Encendiendo canal con transcoding, id ${id}`);
+    const loadingMessage = document.getElementById('loadingMessage');
     fetch(`https://${url}/api/canales/encender/transcode/${id}`, {
         method: 'POST',
     })
@@ -90,10 +91,20 @@ function encenderCanalTranscode(id) {
         return response.json();
     })
     .then(data => {
-        hideLoader();
-        console.log(data);
-        //alert(`Canal ${id} encendido con éxito`);
-        obtenerCanalesYMostrar();
+        let counter = 5; 
+        loadingMessage.innerText = `Por favor, espera ${counter} segundos mientras el stream se estabiliza.`; 
+
+        const intervalId = setInterval(() => {
+            counter--; 
+            loadingMessage.innerText = `Por favor, espera ${counter} segundos mientras el stream se estabiliza.`; 
+
+            if (counter === 0) {
+                clearInterval(intervalId); 
+                hideLoader();
+                loadingMessage.innerText = ''; 
+                obtenerCanalesYMostrar();
+            }
+        }, 1000); 
     })
     .catch(error => {
         hideLoader();
@@ -150,7 +161,7 @@ function verCanalTranscode(id) {
         });
 }
 
-function showLoader(msg) {
+function showLoader(msg, seconds) {
   const loadingScreen = document.getElementById('loading-screen');
   const loadingMessage = document.getElementById('loading-message');
   loadingMessage.textContent = msg; // Establece el mensaje proporcionado
@@ -202,6 +213,7 @@ function obtenerCanalesYMostrar() {
                             <p>ID: ${canal.id}</p>
                             <p>Docker ID: ${canal.docker_id || 'No Encendido'}</p>
                             <p>Transcoding ID: ${canal.transcoding_id || 'No Encendido'}</p>
+                            <p>Live Channel ID: ${canal.live_channel_id || 'No Encendido'}</p>
                             <button class="channel-button" onclick="eliminarCanal('${canal.id}')">Eliminar</button>
                             <br>
                             `;

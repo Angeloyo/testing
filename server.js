@@ -148,15 +148,15 @@ app.post('/api/canales/encender/transcode/:id', (req, res) => {
                     console.error(`exec error: ${error}`);
                     return res.status(500).send({ message: 'Error al encender el canal'});
                 }
-                const containerId = `transcoding-${liveChannelId}`;
+                const transcodingId = `transcoding-${liveChannelId}`;
 
                 const updateQuery = `UPDATE canales SET transcoding_id = ?, live_channel_id = ? WHERE id = ?`;
-                db.run(updateQuery, [containerId, liveChannelId, id], function(updateErr) {
+                db.run(updateQuery, [transcodingId, liveChannelId, id], function(updateErr) {
                     if (updateErr) {
                         console.error(updateErr.message);
                         return res.status(500).send({ message: 'Error al actualizar la información del canal' });
                     }
-                    res.send({ message: 'Canal encendido con éxito', id, liveChannelId, port, containerId });
+                    res.send({ message: 'Canal encendido con éxito', id, liveChannelId, port, transcodingId });
                 });
             });
         });
@@ -263,7 +263,7 @@ app.post('/api/canales', (req, res) => {
 
 // Obtener todos los canales
 app.get('/api/canales', (req, res) => {
-  db.all("SELECT id, name, docker_id, transcoding_id FROM canales", [], (err, filas) => {
+  db.all("SELECT id, name, docker_id, transcoding_id, live_channel_id FROM canales", [], (err, filas) => {
     if (err) {
       console.error(err.message);
       res.status(500).send({ error: "Error al obtener los canales" });
