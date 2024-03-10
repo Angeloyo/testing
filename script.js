@@ -214,10 +214,16 @@ function obtenerCanalesYMostrar() {
         })
         .then(function (canales) {
             const listaCanales = document.getElementById('lista-canales');
-            listaCanales.innerHTML = ''; // Limpia la lista antes de añadir los elementos actualizados
+            listaCanales.innerHTML = ''; 
+
+            if (canales.length === 0) {
+                listaCanales.innerHTML = '<p>Todavía no tienes ningún canal.</p>';
+                return; 
+            }
+
             canales.forEach(canal => {
                 const elemento = document.createElement('div');
-                elemento.classList.add("m-7");
+                // elemento.classList.add("m-7");
                 let html = `<h3>Nombre: ${canal.name}</h3>
                             <p>ID: ${canal.id}</p>
                             <p>Docker ID: ${canal.docker_id || 'No Encendido'}</p>
@@ -225,19 +231,16 @@ function obtenerCanalesYMostrar() {
                             <p>Raw Live ID: ${canal.raw_live_id || 'No Encendido'}</p>
                             <p>Transcoding Live ID: ${canal.transcoding_live_id || 'No Encendido'}</p>
                             <button class="channel-button" onclick="eliminarCanal('${canal.id}')">Eliminar</button>
-                            <br>
-                            `;
+                            <br>`;
                 
                 if (canal.docker_id) {
                     html += `<button class="channel-button" onclick="apagarCanalRaw('${canal.id}')">Apagar Raw</button>
                              <button class="channel-button" onclick="verCanalRaw('${canal.id}')">Ver Raw</button>
-                             <br>
-                             `;
+                             <br>`;
                 }
                 else {
                     html += `<button class="channel-button" onclick="encenderCanalRaw('${canal.id}')">Encender Raw</button>
-                             <br>
-                             `;
+                             <br>`;
                 }
 
                 if (canal.transcoding_id) {
@@ -248,16 +251,15 @@ function obtenerCanalesYMostrar() {
                     html += `<button class="channel-button" onclick="encenderCanalTranscode('${canal.id}')">Encender Transcode</button>`;
                 }
                 
-                
                 elemento.innerHTML = html;
                 listaCanales.appendChild(elemento);
             });
         })
         .catch(function (error) {
             console.error('Error al obtener los canales:', error);
+            // Opcional: Mostrar el mensaje de error en la interfaz de usuario
         });
 }
-
 
 // Crear canal form
 document.addEventListener("DOMContentLoaded", function() {
