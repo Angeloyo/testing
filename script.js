@@ -76,7 +76,47 @@ function verCanalRaw(id) {
         .then(data => {
             const rawLiveId = data.raw_live_id; // Asume que el servidor devuelve un objeto con esta propiedad.
             const urlFinal = `https://${url}/watch/${rawLiveId}/ace/manifest.m3u8?id=${id}`;
-            if (ventana) ventana.location.href = urlFinal; 
+
+            const html = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Canal en Vivo</title>
+                    <script type="text/javascript"
+                        src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js">
+                    </script>
+                    <style>
+                        html, body {
+                            height: 100%;
+                            width: 100%;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        #player {
+                            height: 100%;
+                            width: 100%;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div id="player"></div>
+                    <script>
+                        new Clappr.Player({
+                            parentId: "#player",
+                            source: "${urlFinal}",
+                            autoPlay: true,
+                            height: '100%',
+                            width: '100%'
+                        });
+                    </script>
+                </body>
+                </html>
+            `;
+            if (ventana) {
+                ventana.document.open();
+                ventana.document.write(html);
+                ventana.document.close();
+            }
         })
         .catch(error => {
             console.error('Error:', error);
