@@ -149,53 +149,55 @@ function apagarCanalTranscode(id) {
 
 function verCanalTranscode(id) {
     const ventana = window.open('', '_blank');
-    if (ventana) ventana.document.write('Cargando...');
+    if (ventana) {
+        ventana.document.write('Cargando...');
+        fetch(`https://${url}/api/canales/getLiveID/${id}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('No se pudo obtener la información del canal.');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const transcodingLiveId = data.transcoding_live_id;
+                const urlFinal = `https://${url}/watch/${transcodingLiveId}/output.m3u8`;
 
-    fetch(`https://${url}/api/canales/getLiveID/${id}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('No se pudo obtener la información del canal.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const transcodingLiveId = data.transcoding_live_id;
-            const urlFinal = `https://${url}/watch/${transcodingLiveId}/output.m3u8`;
-
-            const html = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Canal en Vivo</title>
-                    <script type="text/javascript"
-                        src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js">
-                    </script>
-                </head>
-                <body>
-                    <div id="player"></div>
-                    <script>
-                        new Clappr.Player({
-                            parentId: "#player",
-                            source: "${urlFinal}",
-                            autoPlay: true,
-                            height: '100%',
-                            width: '100%'
-                        });
-                    </script>
-                </body>
-                </html>
-            `;
-            if (ventana) {
+                const html = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Canal en Vivo</title>
+                    </head>
+                    <body>
+                        <div id="player"></div>
+                        <script type="text/javascript"
+                            src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js">
+                        </script>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                new Clappr.Player({
+                                    parentId: "#player",
+                                    source: "${urlFinal}",
+                                    autoPlay: true,
+                                    height: '100%',
+                                    width: '100%'
+                                });
+                            });
+                        </script>
+                    </body>
+                    </html>
+                `;
                 ventana.document.open();
                 ventana.document.write(html);
                 ventana.document.close();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            if (ventana) ventana.close();
-        });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                ventana.close();
+            });
+    }
 }
+
 
 function showLoader(msg, seconds) {
   const loadingScreen = document.getElementById('loading-screen');
