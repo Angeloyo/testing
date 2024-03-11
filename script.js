@@ -149,7 +149,7 @@ function apagarCanalTranscode(id) {
 
 function verCanalTranscode(id) {
     const ventana = window.open('', '_blank');
-    if (ventana) ventana.document.write('Cargando...'); 
+    if (ventana) ventana.document.write('Cargando...');
 
     fetch(`https://${url}/api/canales/getLiveID/${id}`)
         .then(response => {
@@ -161,12 +161,39 @@ function verCanalTranscode(id) {
         .then(data => {
             const transcodingLiveId = data.transcoding_live_id;
             const urlFinal = `https://${url}/watch/${transcodingLiveId}/output.m3u8`;
-            if (ventana) ventana.location.href = urlFinal; 
+
+            const html = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Canal en Vivo</title>
+                    <script type="text/javascript"
+                        src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js">
+                    </script>
+                </head>
+                <body>
+                    <div id="player"></div>
+                    <script>
+                        new Clappr.Player({
+                            parentId: "#player",
+                            source: "${urlFinal}",
+                            autoPlay: true,
+                            height: '100%',
+                            width: '100%'
+                        });
+                    </script>
+                </body>
+                </html>
+            `;
+            if (ventana) {
+                ventana.document.open();
+                ventana.document.write(html);
+                ventana.document.close();
+            }
         })
         .catch(error => {
             console.error('Error:', error);
-            //alert('Error al ver el canal. Por favor, intente de nuevo más tarde.');
-            if (ventana) ventana.close(); 
+            if (ventana) ventana.close();
         });
 }
 
