@@ -149,55 +149,65 @@ function apagarCanalTranscode(id) {
 
 function verCanalTranscode(id) {
     const ventana = window.open('', '_blank');
-    if (ventana) {
-        ventana.document.write('Cargando...');
-        fetch(`https://${url}/api/canales/getLiveID/${id}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('No se pudo obtener la información del canal.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                const transcodingLiveId = data.transcoding_live_id;
-                const urlFinal = `https://${url}/watch/${transcodingLiveId}/output.m3u8`;
+    if (ventana) ventana.document.write('Cargando...');
 
-                const html = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Canal en Vivo</title>
-                    </head>
-                    <body>
-                        <div id="player"></div>
-                        <script type="text/javascript"
-                            src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js">
-                        </script>
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                new Clappr.Player({
-                                    parentId: "#player",
-                                    source: "${urlFinal}",
-                                    autoPlay: true,
-                                    height: '100%',
-                                    width: '100%'
-                                });
-                            });
-                        </script>
-                    </body>
-                    </html>
-                `;
+    fetch(`https://${url}/api/canales/getLiveID/${id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('No se pudo obtener la información del canal.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const transcodingLiveId = data.transcoding_live_id;
+            const urlFinal = `https://${url}/watch/${transcodingLiveId}/output.m3u8`;
+
+            const html = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Canal en Vivo</title>
+                    <script type="text/javascript"
+                        src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js">
+                    </script>
+                    <style>
+                        html, body {
+                            height: 100%;
+                            width: 100%;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        #player {
+                            height: 100%;
+                            width: 100%;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div id="player"></div>
+                    <script>
+                        new Clappr.Player({
+                            parentId: "#player",
+                            source: "${urlFinal}",
+                            autoPlay: true,
+                            height: '100%',
+                            width: '100%'
+                        });
+                    </script>
+                </body>
+                </html>
+            `;
+            if (ventana) {
                 ventana.document.open();
                 ventana.document.write(html);
                 ventana.document.close();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                ventana.close();
-            });
-    }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            if (ventana) ventana.close();
+        });
 }
-
 
 function showLoader(msg, seconds) {
   const loadingScreen = document.getElementById('loading-screen');
