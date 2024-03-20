@@ -99,7 +99,7 @@ app.delete('/api/canales/apagar/raw/:id', (req, res) => {
         const dockerId = row.docker_id;
 
         // Detiene y elimina el contenedor Docker asociado al canal
-        exec(`docker stop ${dockerId} && docker rm ${dockerId}`, (error, stdout, stderr) => {
+        exec(`docker kill ${dockerId} && docker rm ${dockerId}`, (error, stdout, stderr) => {
             if (error) {
                 console.error(`exec error: ${error}`);
                 return res.status(500).send({ message: 'Error al apagar el canal' });
