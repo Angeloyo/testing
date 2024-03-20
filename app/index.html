@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ACE-PARADISE</title>
+    <title>ACE-WEBAPP</title>
     <link rel="stylesheet" href="./src/output.css">
 </head>
 <body>
@@ -14,9 +14,9 @@
 
     <main class="m-5">
         
-        <!-- Crear canales -->
+        <!-- Create channels -->
         <div class="m-2">
-            <h2 class="text-blue-700 text-3xl font-semibold mb-6">Crea un Nuevo Canal</h2>
+            <h2 class="text-blue-700 text-3xl font-semibold mb-6">Create new channel</h2>
             <form id="crear-canal-form" class="space-y-6 bg-white p-6 rounded-lg shadow-lg">
                 <input type="text" id="channel-name" placeholder="Nombre del Canal" required class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
                 <input type="text" id="id-canal" placeholder="ID del Canal" required class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50">
@@ -26,13 +26,13 @@
         
         <!-- Lista canales -->
         <div class="m-2">
-            <h1 class="text-4xl font-bold">Mis canales</h1>
+            <h1 class="text-4xl font-bold">My channels</h1>
             <div id="lista-canales"></div>
         </div>
         
         <div id="loading-screen" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex flex-col justify-center items-center hidden">
             <div class="custom-spinner"></div>
-            <div id="loading-message" class="text-white mt-3">Cargando...</div>
+            <div id="loading-message" class="text-white mt-3">Loading...</div>
         </div>
     </main>
 
