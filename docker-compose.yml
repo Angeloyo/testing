@@ -2,6 +2,7 @@ version: '3'
 services:
   acestream:
     image: ghcr.io/martinbjeldbak/acestream-http-proxy 
+    user: "1000:1000"
     ports:
       - "80" 
     networks:
@@ -9,6 +10,7 @@ services:
 
   ffmpeg:
     image: linuxserver/ffmpeg 
+    user: "1000:1000"
     environment:
       - STREAM_ID
       - LIVE_CHANNEL_ID
