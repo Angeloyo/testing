@@ -8,7 +8,7 @@ services:
       - stream-network
 
   ffmpeg:
-    image: jrottenberg/ffmpeg 
+    image: linuxserver/ffmpeg 
     environment:
       - STREAM_ID
       - LIVE_CHANNEL_ID

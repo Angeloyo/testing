@@ -1,6 +1,6 @@
 // const url = '82.165.10.57:3000'
-// const url = 'ap1.casaroja.app';
-const url = 'localhost';
+const url = 'ap1.casaroja.app';
+// const url = 'localhost';
 
 function encenderCanalRaw(id) {
     showLoader(`Encendiendo canal sin transcoding, id ${id}`);
